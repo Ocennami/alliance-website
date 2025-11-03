@@ -1,7 +1,21 @@
 "use client";
 import ChitChatWidget from "@/components/ChitChatWidget";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function HomePage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Kiểm tra nếu user đăng nhập bằng tài khoản đặc biệt
+    if (session?.user?.email === "username1@gmail.com") {
+      // Redirect về trang login để hiển thị modal
+      router.push("/loginpage?showModal=true");
+    }
+  }, [session, router]);
+
   return (
     <main>
       {/* Hero Section với Video Background */}

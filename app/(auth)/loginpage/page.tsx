@@ -1,10 +1,11 @@
 ﻿"use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import MigrateAccountModal from "@/components/MigrateAccountModal";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,22 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const shouldShowModal = searchParams.get("showModal") === "true";
+    const isSpecialAccount = session?.user?.email === "username1@gmail.com";
+
+    if (shouldShowModal || isSpecialAccount) {
+      setShowCreateAccountModal(true);
+      if (isSpecialAccount) {
+        signOut({ redirect: false });
+      }
+    }
+  }, [searchParams, session]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +36,13 @@ export default function LoginPage() {
     setError("");
 
     try {
+      // Kiểm tra nếu là tài khoản đặc biệt để tạo account mới
+      if (email === "username1@gmail.com" && password === "11111111") {
+        setIsLoading(false);
+        setShowCreateAccountModal(true);
+        return;
+      }
+
       const result = await signIn("credentials", {
         redirect: false,
         email: email,
@@ -59,12 +82,24 @@ export default function LoginPage() {
             key={i}
             className="absolute h-1 w-1 rounded-full bg-white/20"
             initial={{
-              x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1920),
-              y: Math.random() * (typeof window !== "undefined" ? window.innerHeight : 1080),
+              x:
+                Math.random() *
+                (typeof window !== "undefined" ? window.innerWidth : 1920),
+              y:
+                Math.random() *
+                (typeof window !== "undefined" ? window.innerHeight : 1080),
             }}
             animate={{
-              y: [null, Math.random() * (typeof window !== "undefined" ? window.innerHeight : 1080)],
-              x: [null, Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1920)],
+              y: [
+                null,
+                Math.random() *
+                  (typeof window !== "undefined" ? window.innerHeight : 1080),
+              ],
+              x: [
+                null,
+                Math.random() *
+                  (typeof window !== "undefined" ? window.innerWidth : 1920),
+              ],
             }}
             transition={{
               duration: Math.random() * 10 + 20,
@@ -276,6 +311,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
                     className="absolute right-4 text-gray-400 transition-colors hover:text-purple-400"
                     disabled={isLoading}
                   >
@@ -318,6 +354,65 @@ export default function LoginPage() {
                 </div>
               </div>
             </motion.div>
+
+            {/* Special Account Notice */}
+            <AnimatePresence>
+              {email === "username1@gmail.com" && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative overflow-hidden rounded-2xl border border-yellow-400/30 bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-orange-500/10 p-4 shadow-lg shadow-yellow-500/20 backdrop-blur-sm"
+                >
+                  {/* Animated background glow */}
+                  <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-yellow-400/5 via-amber-400/10 to-yellow-400/5"></div>
+
+                  {/* Content */}
+                  <div className="relative flex items-start gap-3">
+                    {/* Icon */}
+                    <div className="flex-shrink-0">
+                      <div className="rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 p-2 shadow-lg shadow-yellow-500/50">
+                        <svg
+                          className="h-5 w-5 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Text */}
+                    <div className="flex-1 space-y-1">
+                      <h4 className="flex items-center gap-2 text-sm font-bold text-yellow-300">
+                        <span>🌟 Special Admin Account Detected</span>
+                      </h4>
+                      <p className="text-xs leading-relaxed text-yellow-200/90">
+                        This account has{" "}
+                        <span className="font-semibold text-yellow-300">
+                          special privileges
+                        </span>{" "}
+                        to create new user accounts.
+                        <br />
+                        Password:{" "}
+                        <code className="rounded bg-yellow-400/20 px-1.5 py-0.5 font-mono text-yellow-300">
+                          11111111
+                        </code>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Decorative corner elements */}
+                  <div className="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-yellow-400/10 blur-2xl"></div>
+                  <div className="absolute -bottom-4 -left-4 h-12 w-12 rounded-full bg-amber-400/10 blur-xl"></div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Submit button */}
             <motion.button
@@ -393,6 +488,12 @@ export default function LoginPage() {
         <div className="pointer-events-none absolute -left-8 -top-8 h-40 w-40 rounded-full bg-gradient-to-br from-purple-500/30 to-transparent blur-2xl"></div>
         <div className="pointer-events-none absolute -bottom-8 -right-8 h-40 w-40 rounded-full bg-gradient-to-tl from-pink-500/30 to-transparent blur-2xl"></div>
       </motion.div>
+
+      {/* Create Account Modal */}
+      <MigrateAccountModal
+        isOpen={showCreateAccountModal}
+        onClose={() => setShowCreateAccountModal(false)}
+      />
     </div>
   );
 }

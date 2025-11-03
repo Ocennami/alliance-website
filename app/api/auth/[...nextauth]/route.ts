@@ -20,6 +20,15 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // Chặn đăng nhập bằng tài khoản đặc biệt - chỉ dùng để tạo account
+        if (
+          credentials.email === "username1@gmail.com" &&
+          credentials.password === "11111111"
+        ) {
+          console.log("Special account detected - blocking login");
+          return null;
+        }
+
         try {
           // Đăng nhập với Supabase
           const { data, error } = await supabase.auth.signInWithPassword({

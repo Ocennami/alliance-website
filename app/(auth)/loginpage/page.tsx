@@ -59,12 +59,12 @@ export default function LoginPage() {
             key={i}
             className="absolute h-1 w-1 rounded-full bg-white/20"
             initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
+              x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1920),
+              y: Math.random() * (typeof window !== "undefined" ? window.innerHeight : 1080),
             }}
             animate={{
-              y: [null, Math.random() * window.innerHeight],
-              x: [null, Math.random() * window.innerWidth],
+              y: [null, Math.random() * (typeof window !== "undefined" ? window.innerHeight : 1080)],
+              x: [null, Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1920)],
             }}
             transition={{
               duration: Math.random() * 10 + 20,

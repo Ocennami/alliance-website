@@ -64,10 +64,10 @@ export default function Header() {
               Members
             </Link>
             <Link
-              href="/server"
+              href="/gallery"
               className="text-sm font-medium text-white transition hover:text-gray-200"
             >
-              Server
+              Gallery
             </Link>
             <Link
               href="/contact"

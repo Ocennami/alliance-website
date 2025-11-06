@@ -72,7 +72,12 @@ export default function ContactPage() {
             className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.2 }}
+            whileHover={{
+              scale: 1.02,
+              boxShadow: "0 20px 40px -15px rgba(147, 51, 234, 0.3)",
+              transition: { duration: 0.2 },
+            }}
           >
             <h2 className="text-3xl font-bold text-purple-700 mb-6">
               📧 Send us a message
@@ -213,17 +218,28 @@ export default function ContactPage() {
               className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: 0.2 }}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0 20px 40px -15px rgba(236, 72, 153, 0.3)",
+                transition: { duration: 0.2 },
+              }}
             >
               <h2 className="text-3xl font-bold text-purple-700 mb-6">
                 📍 Contact Information
               </h2>
               <div className="space-y-6">
                 <motion.div
-                  className="flex items-start gap-4"
+                  className="flex items-start gap-4 p-4 rounded-2xl transition-all duration-300"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 }}
+                  transition={{ duration: 0.2 }}
+                  whileHover={{
+                    scale: 1.05,
+                    backgroundColor: "rgba(243, 232, 255, 0.5)",
+                    boxShadow: "0 10px 30px -10px rgba(147, 51, 234, 0.3)",
+                    transition: { duration: 0.2 },
+                  }}
                 >
                   <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-3 rounded-full">
                     <svg
@@ -247,10 +263,16 @@ export default function ContactPage() {
                 </motion.div>
 
                 <motion.div
-                  className="flex items-start gap-4"
+                  className="flex items-start gap-4 p-4 rounded-2xl transition-all duration-300"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 }}
+                  transition={{ duration: 0.2 }}
+                  whileHover={{
+                    scale: 1.05,
+                    backgroundColor: "rgba(243, 232, 255, 0.5)",
+                    boxShadow: "0 10px 30px -10px rgba(236, 72, 153, 0.3)",
+                    transition: { duration: 0.2 },
+                  }}
                 >
                   <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-3 rounded-full">
                     <svg
@@ -282,10 +304,16 @@ export default function ContactPage() {
                 </motion.div>
 
                 <motion.div
-                  className="flex items-start gap-4"
+                  className="flex items-start gap-4 p-4 rounded-2xl transition-all duration-300"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7 }}
+                  transition={{ duration: 0.2 }}
+                  whileHover={{
+                    scale: 1.05,
+                    backgroundColor: "rgba(243, 232, 255, 0.5)",
+                    boxShadow: "0 10px 30px -10px rgba(99, 102, 241, 0.3)",
+                    transition: { duration: 0.2 },
+                  }}
                 >
                   <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-3 rounded-full">
                     <svg
@@ -320,7 +348,12 @@ export default function ContactPage() {
               className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.2 }}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0 20px 40px -15px rgba(168, 85, 247, 0.3)",
+                transition: { duration: 0.2 },
+              }}
             >
               <h2 className="text-3xl font-bold text-purple-700 mb-6">
                 🌐 Follow Us
@@ -399,6 +432,10 @@ export default function ContactPage() {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0 20px 40px -15px rgba(192, 132, 252, 0.4)",
+              }}
             >
               <h2 className="text-2xl font-bold text-purple-700 mb-4">
                 🔗 Quick Links
@@ -419,11 +456,11 @@ export default function ContactPage() {
                   → Members
                 </motion.a>
                 <motion.a
-                  href="/server"
+                  href="/gallery"
                   className="block text-gray-700 hover:text-purple-600 transition"
                   whileHover={{ x: 5 }}
                 >
-                  → Server
+                  → Gallery
                 </motion.a>
               </div>
             </motion.section>

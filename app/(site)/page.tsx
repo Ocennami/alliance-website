@@ -17,7 +17,7 @@ export default function HomePage() {
   }, [session, router]);
 
   return (
-    <main>
+    <main className="bg-indigo-950">
       {/* Hero Section với Video Background */}
       <section className="relative h-screen w-full overflow-hidden -mt-28">
         {/* Video Background */}
@@ -51,15 +51,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Nội dung phần dưới */}
-      <div className="relative min-h-screen w-full py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <p className="text-2xl text-gray-300">About...</p>
-          </div>
-        </div>
-      </div>
 
       <ChitChatWidget />
     </main>

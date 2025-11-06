@@ -17,7 +17,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} bg-indigo-950 text-white antialiased`}
+        className={`${GeistSans.variable} ${GeistMono.variable} bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-900 antialiased`}
         suppressHydrationWarning={true}
       >
         <Providers>

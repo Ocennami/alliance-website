@@ -10,29 +10,44 @@ export default function GalleryPage() {
     {
       id: "event1",
       name: "Event 1",
-      period: "2020-2021",
-      description: "Event đầu tiên trong server riêng của Alliance",
+      period: "2021",
+      description: "Event đầu tiên trong group",
       icon: "🎪",
       color: "from-green-500 to-emerald-600",
-      stats: { participants: "10", duration: "2 tuần", rewards: "Rare items" },
+      details: {
+        fullDescription: "Đây là event đầu tiên được tổ chức trong group.",
+        imageUrl: "/events/event1.jpg", // Placeholder
+        imageAlt: "Event 1 - Alliance Organization",
+      },
     },
     {
       id: "event2",
       name: "Event 2",
       period: "2022-2023",
-      description: "Event đặc biệt với nhiều thử thách mới",
+      description:
+        "Event đặc biệt với nhiều thử thách mới tại server minecraft private",
       icon: "🎯",
       color: "from-purple-500 to-pink-600",
-      stats: { participants: "10", duration: "3 tuần", rewards: "Epic items" },
+      details: {
+        fullDescription:
+          "Event lần 2 tổ chức tại server private với nội dung RacingBoat",
+        imageUrl: "/events/event2.jpg",
+        imageAlt: "Event 2 - Alliance Organization",
+      },
     },
     {
       id: "event3",
       name: "Event 3",
-      period: "2024-2025",
-      description: "Event hoành tráng nhất từ trước đến nay",
-      icon: "�",
+      period: "7-2024",
+      description: "Event tại server minecraft private rebuilt",
+      icon: "🎊",
       color: "from-blue-500 to-cyan-600",
-      stats: { participants: "10", duration: "1 tháng", rewards: "Legendary" },
+      details: {
+        fullDescription:
+          "Event 3 được dành nhiều thời gian đầu tư nhất cho tới hiện tại",
+        imageUrl: "/events/event3.jpg",
+        imageAlt: "Event 3 - Alliance Organization",
+      },
     },
   ];
 
@@ -44,7 +59,7 @@ export default function GalleryPage() {
       color: "from-purple-500/20 to-pink-500/20",
     },
     {
-      icon: "�",
+      icon: "🎪",
       title: "3 Events",
       description: "Những thú vui tao nhã",
       color: "from-blue-500/20 to-cyan-500/20",
@@ -74,7 +89,7 @@ export default function GalleryPage() {
           transition={{ duration: 0.2 }}
         >
           <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 mb-4">
-            � Our Events & Memories
+            🎊 Our Events & Memories
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
             Alliance Organization - Kết nối qua màn hình, gắn kết qua Minecraft
@@ -124,79 +139,173 @@ export default function GalleryPage() {
             🎪 Events Timeline
           </h2>
 
-          <div className="space-y-8">
-            {events.map((game, index) => (
-              <motion.div
-                key={game.id}
-                className={`bg-gradient-to-r ${game.color} rounded-3xl p-8 shadow-2xl border border-white/30 text-white cursor-pointer`}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.1 }}
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-                  transition: { duration: 0.2 },
-                }}
-                onClick={() =>
-                  setSelectedGame(selectedGame === game.id ? null : game.id)
-                }
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-4">
-                    <div className="text-6xl">{game.icon}</div>
-                    <div>
-                      <h3 className="text-3xl font-bold mb-1">{game.name}</h3>
-                      <p className="text-white/90 text-lg">{game.period}</p>
+          {/* Timeline Container */}
+          <div className="relative max-w-7xl mx-auto px-4">
+            {/* Vertical Line */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-green-500 via-purple-500 to-blue-500 hidden md:block"></div>
+
+            {/* Timeline Items */}
+            <div className="space-y-12">
+              {events.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  className="relative"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                >
+                  {/* Timeline Item */}
+                  <div
+                    className={`flex flex-col md:flex-row gap-6 items-center ${
+                      index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                    }`}
+                  >
+                    {/* Content Card */}
+                    <motion.div
+                      className={`w-full md:w-[45%] bg-gradient-to-br ${event.color} rounded-2xl p-8 shadow-2xl border border-white/30 text-white cursor-pointer`}
+                      whileHover={{
+                        scale: 1.05,
+                        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+                        transition: { duration: 0.3 },
+                      }}
+                      onClick={() =>
+                        setSelectedGame(
+                          selectedGame === event.id ? null : event.id
+                        )
+                      }
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="text-6xl mb-4">{event.icon}</div>
+                        <motion.div
+                          animate={{
+                            rotate: selectedGame === event.id ? 180 : 0,
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <svg
+                            className="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </motion.div>
+                      </div>
+
+                      <h3 className="text-3xl font-bold mb-2">{event.name}</h3>
+                      <p className="text-white/90 text-lg font-semibold mb-3">
+                        {event.period}
+                      </p>
+                      <p className="text-white/95 text-lg leading-relaxed">
+                        {event.description}
+                      </p>
+
+                      {/* Expanded Details with Description + Image */}
+                      <motion.div
+                        initial={false}
+                        animate={{
+                          height: selectedGame === event.id ? "auto" : 0,
+                          opacity: selectedGame === event.id ? 1 : 0,
+                        }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-6 pt-6 border-t border-white/30 space-y-6">
+                          {/* Full Description */}
+                          <div>
+                            <h4 className="text-xl font-bold mb-3 text-white flex items-center gap-2">
+                              <span>📝</span> Chi Tiết Event
+                            </h4>
+                            <p className="text-white/90 leading-relaxed text-base">
+                              {event.details.fullDescription}
+                            </p>
+                          </div>
+
+                          {/* Image Section */}
+                          <div className="rounded-xl overflow-hidden bg-white/10 backdrop-blur-sm">
+                            <div className="aspect-video bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center relative">
+                              {/* Placeholder Image - Replace with actual image */}
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="text-center">
+                                  <div className="text-6xl mb-3">
+                                    {event.icon}
+                                  </div>
+                                  <p className="text-white/60 text-sm">
+                                    Image Placeholder
+                                  </p>
+                                  <p className="text-white/40 text-xs mt-1">
+                                    {event.details.imageAlt}
+                                  </p>
+                                </div>
+                              </div>
+                              {/* Uncomment when you have real images */}
+                              {/* <img 
+                                src={event.details.imageUrl} 
+                                alt={event.details.imageAlt}
+                                className="w-full h-full object-cover"
+                              /> */}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </motion.div>
+
+                    {/* Center Circle (Timeline Node) */}
+                    <div className="hidden md:flex md:w-[10%] justify-center relative z-10">
+                      <motion.div
+                        className={`w-16 h-16 rounded-full bg-gradient-to-br ${event.color} border-4 border-white shadow-xl flex items-center justify-center`}
+                        whileHover={{ scale: 1.2, rotate: 360 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <span className="text-2xl">{event.icon}</span>
+                      </motion.div>
+                    </div>
+
+                    {/* Period Label (on opposite side) */}
+                    <div
+                      className={`hidden md:flex md:w-[45%] ${
+                        index % 2 === 0 ? "justify-start" : "justify-end"
+                      }`}
+                    >
+                      <motion.div
+                        className="bg-white/90 backdrop-blur-sm rounded-xl px-6 py-4 shadow-lg"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                          {event.period}
+                        </p>
+                        <p className="text-gray-600 text-sm font-semibold">
+                          Thời gian diễn ra
+                        </p>
+                      </motion.div>
                     </div>
                   </div>
-                  <motion.div
-                    animate={{ rotate: selectedGame === game.id ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <svg
-                      className="w-8 h-8"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </motion.div>
-                </div>
-
-                <p className="text-xl mb-6 text-white/95">{game.description}</p>
-
-                {/* Expanded Stats */}
-                <motion.div
-                  initial={false}
-                  animate={{
-                    height: selectedGame === game.id ? "auto" : 0,
-                    opacity: selectedGame === game.id ? 1 : 0,
-                  }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/30">
-                    {Object.entries(game.stats).map(([key, value]) => (
-                      <div
-                        key={key}
-                        className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center"
-                      >
-                        <div className="text-3xl font-bold mb-1">{value}</div>
-                        <div className="text-sm uppercase tracking-wide text-white/80">
-                          {key}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </motion.div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
+
+            {/* Timeline End Marker */}
+            <motion.div
+              className="relative mt-12 flex justify-center"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-full px-8 py-4 shadow-2xl border-4 border-white">
+                <p className="text-white font-bold text-xl">
+                  🚀 To Be Continued...
+                </p>
+              </div>
+            </motion.div>
           </div>
         </motion.section>
 

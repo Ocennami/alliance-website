@@ -297,9 +297,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-800 mb-1">Address</h3>
-                    <p className="text-gray-600">
-                      Vietnam National University, Hanoi
-                    </p>
+                    <p className="text-gray-600">Vietnam</p>
                   </div>
                 </motion.div>
 
@@ -334,10 +332,7 @@ export default function ContactPage() {
                     <h3 className="font-bold text-gray-800 mb-1">
                       Working Hours
                     </h3>
-                    <p className="text-gray-600">
-                      Mon - Fri: 9:00 AM - 6:00 PM
-                    </p>
-                    <p className="text-gray-600">Sat - Sun: Closed</p>
+                    <p className="text-gray-600">Any Time</p>
                   </div>
                 </motion.div>
               </div>
@@ -360,7 +355,7 @@ export default function ContactPage() {
               </h2>
               <div className="flex gap-4">
                 <motion.a
-                  href="https://facebook.com"
+                  href="https://m.me/j/Abab1KDciadQIkuR/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
@@ -408,7 +403,7 @@ export default function ContactPage() {
                   </svg>
                 </motion.a>
                 <motion.a
-                  href="https://discord.com"
+                  href="https://discord.gg/gQGN7AzSwt"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"

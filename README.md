@@ -1,14 +1,38 @@
-# Alliance Organization Website
+<div align="center">
+  <a href="https://github.com/Ocennami/alliance-website">
+    <img src="https://user-images.githubusercontent.com/106043444/288039120-14913a8c-a371-428c-8b9a-132830329898.png" alt="Alliance Organization Logo" width="120" height="120">
+  </a>
+  <h1 align="center">Alliance Organization Website</h1>
+  <p align="center">
+    A modern, feature-rich web application for the Alliance Organization.
+    <br />
+    <a href="https://github.com/Ocennami/alliance-website/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/Ocennami/alliance-website/issues">Request Feature</a>
+  </p>
+</div>
 
-Welcome to the official repository for the Alliance Organization's website. This project is a modern, feature-rich web application built with Next.js, TypeScript, and Supabase. It provides a seamless user experience with authentication, profile management, and real-time features.
+<div align="center">
 
-![Alliance Organization](https://user-images.githubusercontent.com/106043444/288039120-14913a8c-a371-428c-8b9a-132830329898.png)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-14+-blue?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-green?logo=supabase)](https://supabase.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3+-blue?logo=tailwind-css)](https://tailwindcss.com/)
+
+</div>
+
+---
+
+## 🌟 About The Project
+
+Welcome to the official repository for the Alliance Organization's website. This project is a modern, feature-rich web application built with the latest web technologies to provide a seamless and engaging user experience. It includes features like secure authentication, user profile management, and real-time communication.
 
 ## ✨ Features
 
-- **Next.js 16 App Router**: Utilizes the latest features of Next.js for optimal performance and developer experience.
+- **Next.js 14+ App Router**: Utilizes the latest features of Next.js for optimal performance and developer experience.
 - **Authentication**: Secure user login and registration using NextAuth.js.
-- **Supabase Integration**: Leverages Supabase for database storage, and real-time capabilities.
+- **Supabase Integration**: Leverages Supabase for database storage and real-time capabilities.
 - **Profile Management**: Users can update their profile information, including uploading and cropping avatars.
 - **Real-time Chat**: A ChitChat widget for real-time communication.
 - **Modern UI**: A beautiful and responsive user interface built with Tailwind CSS and Framer Motion.
@@ -66,8 +90,6 @@ Follow these instructions to get a copy of the project up and running on your lo
     NEXT_PUBLIC_VIDEO_URL=your_background_video_url
     ```
 
-    See `SUPABASE_SETUP.md` for more details on setting up Supabase.
-
 4.  **Run the development server:**
 
     ```bash
@@ -82,15 +104,52 @@ Follow these instructions to get a copy of the project up and running on your lo
 alliance-website/
 ├── app/
 │   ├── (auth)/           # Authentication-related pages
+│   │   ├── auth.css
+│   │   ├── layout.tsx
+│   │   └── loginpage/
+│   │       └── page.tsx
 │   ├── (site)/           # Main site pages
+│   │   ├── header.tsx
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── about/
+│   │   │   └── page.tsx
+│   │   ├── contact/
+│   │   │   └── page.tsx
+│   │   ├── gallery/
+│   │   │   └── page.tsx
+│   │   └── members/
+│   │       └── page.tsx
 │   ├── api/              # API routes
+│   │   ├── auth/
+│   │   │   └── [...nextauth]/
+│   │   │       └── route.ts
+│   │   └── profile/
+│   │       └── update/
+│   │           └── route.ts
+│   ├── code-editor-theme.css
 │   ├── globals.css       # Global styles
-│   └── layout.tsx        # Root layout
+│   ├── layout.tsx        # Root layout
+│   └── providers.tsx
 ├── components/           # Reusable components
+│   ├── AvatarCropModal.tsx
+│   ├── ChitChatWidget.tsx
+│   ├── MigrateAccountModal.tsx
+│   ├── PageTransition.tsx
+│   ├── ProfileCodeEditor.tsx
+│   ├── ProfilePreviewModal.tsx
+│   ├── SessionProvider.tsx
+│   └── SettingsModal.tsx
 ├── lib/                  # Library files (e.g., Supabase client)
+│   └── supabase.ts
 ├── public/               # Static assets
+│   ├── events/
+│   ├── logo/
+│   └── video/
 ├── types/                # TypeScript type definitions
-├── .eslintrc.json        # ESLint configuration
+│   └── next-auth.d.ts
+├── eslint.config.mjs     # ESLint configuration
+├── next-env.d.ts
 ├── next.config.ts        # Next.js configuration
 ├── package.json          # Project dependencies and scripts
 ├── postcss.config.mjs    # PostCSS configuration
@@ -120,4 +179,4 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-_Last updated: November 3, 2025_
+_Last updated: November 8, 2025_

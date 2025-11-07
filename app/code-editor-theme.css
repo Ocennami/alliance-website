@@ -1,5 +1,12 @@
 /* VS Code Dark+ Theme for Code Editor */
 
+/* Base text color for code editor */
+.npm__react-simple-code-editor__textarea,
+.npm__react-simple-code-editor__container pre,
+.npm__react-simple-code-editor__container code {
+  color: #d4d4d4 !important; /* VS Code default text color */
+}
+
 /* Override Prism Tomorrow theme with VS Code colors */
 .token.comment,
 .token.prolog,

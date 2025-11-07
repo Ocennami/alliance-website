@@ -217,6 +217,7 @@ export default function ProfileCodeEditor({
                             "'Fira Code', 'Consolas', 'Monaco', monospace",
                           fontSize: 14,
                           backgroundColor: "#1e1e1e",
+                          color: "#d4d4d4",
                           minHeight: "100%",
                           lineHeight: "1.5rem",
                         }}
@@ -253,6 +254,7 @@ export default function ProfileCodeEditor({
                             "'Fira Code', 'Consolas', 'Monaco', monospace",
                           fontSize: 14,
                           backgroundColor: "#1e1e1e",
+                          color: "#d4d4d4",
                           minHeight: "100%",
                           lineHeight: "1.5rem",
                         }}
@@ -293,6 +295,7 @@ export default function ProfileCodeEditor({
                             "'Fira Code', 'Consolas', 'Monaco', monospace",
                           fontSize: 14,
                           backgroundColor: "#1e1e1e",
+                          color: "#d4d4d4",
                           minHeight: "100%",
                           lineHeight: "1.5rem",
                         }}

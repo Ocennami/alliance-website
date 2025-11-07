@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function GalleryPage() {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -16,7 +17,7 @@ export default function GalleryPage() {
       color: "from-green-500 to-emerald-600",
       details: {
         fullDescription: "Đây là event đầu tiên được tổ chức trong group.",
-        imageUrl: "/events/event1.jpg", // Placeholder
+        imageUrl: "/events/event1.png",
         imageAlt: "Event 1 - Alliance Organization",
       },
     },
@@ -31,7 +32,7 @@ export default function GalleryPage() {
       details: {
         fullDescription:
           "Event lần 2 tổ chức tại server private với nội dung RacingBoat",
-        imageUrl: "/events/event2.jpg",
+        imageUrl: "/events/event2.png",
         imageAlt: "Event 2 - Alliance Organization",
       },
     },
@@ -45,7 +46,7 @@ export default function GalleryPage() {
       details: {
         fullDescription:
           "Event 3 được dành nhiều thời gian đầu tư nhất cho tới hiện tại",
-        imageUrl: "/events/event3.jpg",
+        imageUrl: "/events/event3.png",
         imageAlt: "Event 3 - Alliance Organization",
       },
     },
@@ -232,26 +233,14 @@ export default function GalleryPage() {
                           {/* Image Section */}
                           <div className="rounded-xl overflow-hidden bg-white/10 backdrop-blur-sm">
                             <div className="aspect-video bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center relative">
-                              {/* Placeholder Image - Replace with actual image */}
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-center">
-                                  <div className="text-6xl mb-3">
-                                    {event.icon}
-                                  </div>
-                                  <p className="text-white/60 text-sm">
-                                    Image Placeholder
-                                  </p>
-                                  <p className="text-white/40 text-xs mt-1">
-                                    {event.details.imageAlt}
-                                  </p>
-                                </div>
-                              </div>
-                              {/* Uncomment when you have real images */}
-                              {/* <img 
-                                src={event.details.imageUrl} 
+                              {/* Event Image */}
+                              <Image
+                                src={event.details.imageUrl}
                                 alt={event.details.imageAlt}
-                                className="w-full h-full object-cover"
-                              /> */}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                              />
                             </div>
                           </div>
                         </div>

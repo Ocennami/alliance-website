@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
@@ -11,6 +11,7 @@ export default function Header() {
   const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,58 +35,65 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-0 z-50 mt-8 w-full">
-        <div className="mx-auto max-w-7xl rounded-full bg-gradient-to-r from-pink-400/30 to-purple-500/30 backdrop-blur-md px-6 py-3 shadow-lg border border-white/20">
+      <header className="fixed top-0 z-50 mt-4 sm:mt-8 w-full px-3 sm:px-4">
+        <div className="mx-auto max-w-7xl rounded-2xl sm:rounded-full bg-gradient-to-r from-pink-400/30 to-purple-500/30 backdrop-blur-md px-4 sm:px-6 py-3 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-x-4">
+            {/* Logo and Title */}
+            <div className="flex items-center gap-x-2 sm:gap-x-4 min-w-0 flex-1 sm:flex-initial">
               <Image
                 src="/logo/OIP.jpg"
                 alt="Alliance Organization Logo"
                 width={40}
                 height={40}
-                className="rounded-full"
+                className="rounded-full flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10"
               />
-              <Link href="/" className="text-xl font-bold text-white">
+              <Link
+                href="/"
+                className="text-sm sm:text-xl font-bold text-white truncate"
+              >
                 {'Alliance Organization ":v"'}
               </Link>
             </div>
 
-            <nav className="flex items-center gap-x-8"></nav>
-            <Link
-              href="/about"
-              className="text-sm font-medium text-white transition hover:text-gray-200"
-            >
-              About Us
-            </Link>
-            <Link
-              href="/members"
-              className="text-sm font-medium text-white transition hover:text-gray-200"
-            >
-              Members
-            </Link>
-            <Link
-              href="/gallery"
-              className="text-sm font-medium text-white transition hover:text-gray-200"
-            >
-              Gallery
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm font-medium text-white transition hover:text-gray-200"
-            >
-              Contact
-            </Link>
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-x-6 xl:gap-x-8">
+              <Link
+                href="/about"
+                className="text-sm font-medium text-white transition hover:text-gray-200"
+              >
+                About Us
+              </Link>
+              <Link
+                href="/members"
+                className="text-sm font-medium text-white transition hover:text-gray-200"
+              >
+                Members
+              </Link>
+              <Link
+                href="/gallery"
+                className="text-sm font-medium text-white transition hover:text-gray-200"
+              >
+                Gallery
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm font-medium text-white transition hover:text-gray-200"
+              >
+                Contact
+              </Link>
+            </nav>
 
-            <div className="flex items-center gap-x-4">
+            {/* Right side - Auth and Mobile Menu */}
+            <div className="flex items-center gap-x-2 sm:gap-x-4">
               {status === "loading" && (
-                <div className="h-9 w-24 animate-pulse rounded-full bg-white/20"></div>
+                <div className="h-8 sm:h-9 w-20 sm:w-24 animate-pulse rounded-full bg-white/20"></div>
               )}
 
               {status === "unauthenticated" && (
                 <Link
                   href="/loginpage"
                   prefetch
-                  className="rounded-full bg-white/20 px-5 py-2 text-white transition hover:bg-white/30"
+                  className="rounded-full bg-white/20 px-3 sm:px-5 py-1.5 sm:py-2 text-sm text-white transition hover:bg-white/30"
                 >
                   Sign In
                 </Link>
@@ -109,13 +117,13 @@ export default function Header() {
                           alt={session.user.name || "User Avatar"}
                           width={40}
                           height={40}
-                          className="rounded-full"
+                          className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
                         />
                       </motion.div>
                     )}
                     <motion.span
                       key={session.user.name || ""}
-                      className="hidden text-white sm:block"
+                      className="hidden sm:block text-white text-sm"
                       initial={{ opacity: 0, y: -2 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.15 }}
@@ -151,8 +159,82 @@ export default function Header() {
                   )}
                 </div>
               )}
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition"
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  {isMobileMenuOpen ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  )}
+                </svg>
+              </button>
             </div>
           </div>
+
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.nav
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="lg:hidden overflow-hidden border-t border-white/10 mt-3"
+              >
+                <div className="py-3 space-y-2">
+                  <Link
+                    href="/about"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    href="/members"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition"
+                  >
+                    Members
+                  </Link>
+                  <Link
+                    href="/gallery"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition"
+                  >
+                    Gallery
+                  </Link>
+                  <Link
+                    href="/contact"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition"
+                  >
+                    Contact
+                  </Link>
+                </div>
+              </motion.nav>
+            )}
+          </AnimatePresence>
         </div>
       </header>
 

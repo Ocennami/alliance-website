@@ -66,10 +66,10 @@ export default function ContactPage() {
           </p>
         </motion.div>
 
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {/* Contact Form */}
           <motion.section
-            className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50"
+            className="bg-white/60 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border border-white/50"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.2 }}
@@ -79,13 +79,13 @@ export default function ContactPage() {
               transition: { duration: 0.2 },
             }}
           >
-            <h2 className="text-3xl font-bold text-purple-700 mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-purple-700 mb-4 sm:mb-6">
               📧 Send us a message
             </h2>
 
             {submitStatus === "success" && (
               <motion.div
-                className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg"
+                className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm sm:text-base"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
@@ -95,7 +95,7 @@ export default function ContactPage() {
 
             {submitStatus === "error" && (
               <motion.div
-                className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"
+                className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm sm:text-base"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
@@ -103,7 +103,7 @@ export default function ContactPage() {
               </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -111,7 +111,7 @@ export default function ContactPage() {
               >
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
                 >
                   Tên của bạn *
                 </label>
@@ -122,7 +122,7 @@ export default function ContactPage() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition"
                   placeholder="Nguyễn Văn A"
                 />
               </motion.div>
@@ -134,7 +134,7 @@ export default function ContactPage() {
               >
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
                 >
                   Email *
                 </label>
@@ -145,7 +145,7 @@ export default function ContactPage() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition"
                   placeholder="email@example.com"
                 />
               </motion.div>
@@ -157,7 +157,7 @@ export default function ContactPage() {
               >
                 <label
                   htmlFor="subject"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
                 >
                   Tiêu đề *
                 </label>
@@ -168,7 +168,7 @@ export default function ContactPage() {
                   required
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition"
                   placeholder="Chủ đề của tin nhắn"
                 />
               </motion.div>
@@ -180,7 +180,7 @@ export default function ContactPage() {
               >
                 <label
                   htmlFor="message"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
                 >
                   Tin nhắn *
                 </label>
@@ -190,8 +190,8 @@ export default function ContactPage() {
                   required
                   value={formData.message}
                   onChange={handleChange}
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-lg border border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition resize-none"
+                  rows={5}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition resize-none"
                   placeholder="Viết tin nhắn của bạn ở đây..."
                 />
               </motion.div>
@@ -199,7 +199,7 @@ export default function ContactPage() {
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold px-8 py-4 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 initial={{ opacity: 0 }}
@@ -212,10 +212,10 @@ export default function ContactPage() {
           </motion.section>
 
           {/* Contact Information */}
-          <div className="space-y-8">
+          <div className="space-y-6 md:space-y-8">
             {/* Contact Details */}
             <motion.section
-              className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50"
+              className="bg-white/60 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border border-white/50"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.2 }}
@@ -225,12 +225,12 @@ export default function ContactPage() {
                 transition: { duration: 0.2 },
               }}
             >
-              <h2 className="text-3xl font-bold text-purple-700 mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-purple-700 mb-4 sm:mb-6">
                 📍 Contact Information
               </h2>
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <motion.div
-                  className="flex items-start gap-4 p-4 rounded-2xl transition-all duration-300"
+                  className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2 }}
@@ -241,9 +241,9 @@ export default function ContactPage() {
                     transition: { duration: 0.2 },
                   }}
                 >
-                  <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-3 rounded-full">
+                  <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-2 sm:p-3 rounded-full flex-shrink-0">
                     <svg
-                      className="w-6 h-6 text-purple-600"
+                      className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -256,14 +256,18 @@ export default function ContactPage() {
                       />
                     </svg>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-gray-800 mb-1">Email</h3>
-                    <p className="text-gray-600">contact@alliance.org</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-gray-800 mb-0.5 sm:mb-1 text-sm sm:text-base">
+                      Email
+                    </h3>
+                    <p className="text-gray-600 text-xs sm:text-sm break-all">
+                      contact@alliance.org
+                    </p>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  className="flex items-start gap-4 p-4 rounded-2xl transition-all duration-300"
+                  className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2 }}
@@ -274,9 +278,9 @@ export default function ContactPage() {
                     transition: { duration: 0.2 },
                   }}
                 >
-                  <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-3 rounded-full">
+                  <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-2 sm:p-3 rounded-full flex-shrink-0">
                     <svg
-                      className="w-6 h-6 text-purple-600"
+                      className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -295,14 +299,16 @@ export default function ContactPage() {
                       />
                     </svg>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-gray-800 mb-1">Address</h3>
-                    <p className="text-gray-600">Vietnam</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-gray-800 mb-0.5 sm:mb-1 text-sm sm:text-base">
+                      Address
+                    </h3>
+                    <p className="text-gray-600 text-xs sm:text-sm">Vietnam</p>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  className="flex items-start gap-4 p-4 rounded-2xl transition-all duration-300"
+                  className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2 }}
@@ -313,9 +319,9 @@ export default function ContactPage() {
                     transition: { duration: 0.2 },
                   }}
                 >
-                  <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-3 rounded-full">
+                  <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-2 sm:p-3 rounded-full flex-shrink-0">
                     <svg
-                      className="w-6 h-6 text-purple-600"
+                      className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -328,11 +334,11 @@ export default function ContactPage() {
                       />
                     </svg>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-gray-800 mb-1">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-gray-800 mb-0.5 sm:mb-1 text-sm sm:text-base">
                       Working Hours
                     </h3>
-                    <p className="text-gray-600">Any Time</p>
+                    <p className="text-gray-600 text-xs sm:text-sm">Any Time</p>
                   </div>
                 </motion.div>
               </div>
@@ -340,7 +346,7 @@ export default function ContactPage() {
 
             {/* Social Media */}
             <motion.section
-              className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50"
+              className="bg-white/60 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border border-white/50"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.2 }}
@@ -350,20 +356,20 @@ export default function ContactPage() {
                 transition: { duration: 0.2 },
               }}
             >
-              <h2 className="text-3xl font-bold text-purple-700 mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-purple-700 mb-4 sm:mb-6">
                 🌐 Follow Us
               </h2>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-3 sm:gap-4">
                 <motion.a
                   href="https://m.me/j/Abab1KDciadQIkuR/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+                  className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-3 sm:p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
                   whileHover={{ scale: 1.2, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -374,12 +380,12 @@ export default function ContactPage() {
                   href="https://twitter.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gradient-to-br from-sky-500 to-sky-600 text-white p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+                  className="bg-gradient-to-br from-sky-500 to-sky-600 text-white p-3 sm:p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
                   whileHover={{ scale: 1.2, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -390,12 +396,12 @@ export default function ContactPage() {
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gradient-to-br from-pink-500 to-purple-600 text-white p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+                  className="bg-gradient-to-br from-pink-500 to-purple-600 text-white p-3 sm:p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
                   whileHover={{ scale: 1.2, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -406,12 +412,12 @@ export default function ContactPage() {
                   href="https://discord.gg/gQGN7AzSwt"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+                  className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white p-3 sm:p-4 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
                   whileHover={{ scale: 1.2, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -423,7 +429,7 @@ export default function ContactPage() {
 
             {/* Quick Links */}
             <motion.section
-              className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50"
+              className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border border-white/50"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
@@ -432,27 +438,27 @@ export default function ContactPage() {
                 boxShadow: "0 20px 40px -15px rgba(192, 132, 252, 0.4)",
               }}
             >
-              <h2 className="text-2xl font-bold text-purple-700 mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-purple-700 mb-3 sm:mb-4">
                 🔗 Quick Links
               </h2>
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 <motion.a
                   href="/about"
-                  className="block text-gray-700 hover:text-purple-600 transition"
+                  className="block text-gray-700 hover:text-purple-600 transition text-sm sm:text-base"
                   whileHover={{ x: 5 }}
                 >
                   → About Us
                 </motion.a>
                 <motion.a
                   href="/members"
-                  className="block text-gray-700 hover:text-purple-600 transition"
+                  className="block text-gray-700 hover:text-purple-600 transition text-sm sm:text-base"
                   whileHover={{ x: 5 }}
                 >
                   → Members
                 </motion.a>
                 <motion.a
                   href="/gallery"
-                  className="block text-gray-700 hover:text-purple-600 transition"
+                  className="block text-gray-700 hover:text-purple-600 transition text-sm sm:text-base"
                   whileHover={{ x: 5 }}
                 >
                   → Gallery

@@ -202,7 +202,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
+          <div className="flex min-h-full items-center justify-center p-2 sm:p-4">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -212,19 +212,19 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-3xl bg-white shadow-2xl transition-all">
+              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl sm:rounded-3xl bg-white shadow-2xl transition-all">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-6">
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-4 sm:px-6 py-4 sm:py-6">
                   <div className="flex items-center justify-between">
-                    <Dialog.Title className="text-2xl font-bold text-white">
+                    <Dialog.Title className="text-xl sm:text-2xl font-bold text-white">
                       ⚙️ Account Settings
                     </Dialog.Title>
                     <button
                       onClick={onClose}
-                      className="rounded-full p-2 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+                      className="rounded-full p-1.5 sm:p-2 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
                     >
                       <svg
-                        className="h-6 w-6"
+                        className="h-5 w-5 sm:h-6 sm:w-6"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -240,19 +240,19 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
                 </div>
 
-                <div className="p-6">
+                <div className="p-4 sm:p-6 max-h-[calc(100vh-120px)] overflow-y-auto">
                   {/* Message */}
                   {message && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`mb-6 flex items-center justify-between rounded-lg px-4 py-3 ${
+                      className={`mb-4 sm:mb-6 flex items-center justify-between rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 ${
                         message.type === "success"
                           ? "bg-green-50 text-green-800 border border-green-200"
                           : "bg-red-50 text-red-800 border border-red-200"
                       }`}
                     >
-                      <span className="text-sm font-medium">
+                      <span className="text-xs sm:text-sm font-medium">
                         {message.text}
                       </span>
                       <button
@@ -277,34 +277,34 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   )}
 
                   {/* Profile Section */}
-                  <form onSubmit={handleUpdateProfile} className="mb-8">
-                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+                  <form onSubmit={handleUpdateProfile} className="mb-6 sm:mb-8">
+                    <h3 className="mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-900">
                       <span>👤</span> Personal Information
                     </h3>
 
-                    <div className="space-y-6 rounded-xl border border-gray-200 bg-gray-50 p-6">
+                    <div className="space-y-4 sm:space-y-6 rounded-xl border border-gray-200 bg-gray-50 p-4 sm:p-6">
                       {/* Avatar */}
-                      <div className="flex items-center gap-6">
-                        <div className="relative">
+                      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                        <div className="relative flex-shrink-0">
                           {avatarPreview || session?.user?.image ? (
                             <Image
                               src={avatarPreview || session?.user?.image || ""}
                               alt="Avatar"
                               width={80}
                               height={80}
-                              className="h-20 w-20 rounded-full object-cover ring-4 ring-purple-200"
+                              className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover ring-4 ring-purple-200"
                             />
                           ) : (
-                            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-3xl font-bold text-white ring-4 ring-purple-200">
+                            <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-2xl sm:text-3xl font-bold text-white ring-4 ring-purple-200">
                               {session?.user?.name?.charAt(0).toUpperCase() ||
                                 "U"}
                             </div>
                           )}
                         </div>
-                        <div>
+                        <div className="text-center sm:text-left">
                           <label
                             htmlFor="avatar"
-                            className="inline-block cursor-pointer rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 text-sm font-medium text-white transition-all hover:from-purple-700 hover:to-pink-700"
+                            className="inline-block cursor-pointer rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white transition-all hover:from-purple-700 hover:to-pink-700"
                           >
                             📷 Change Profile Picture
                           </label>
@@ -323,28 +323,28 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                       {/* Name */}
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                        <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-gray-700">
                           Display Name
                         </label>
                         <input
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                          className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-900 transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                           placeholder="Enter your name"
                         />
                       </div>
 
                       {/* Email (read-only) */}
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                        <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-gray-700">
                           Email
                         </label>
                         <input
                           type="email"
                           value={session?.user?.email || ""}
                           readOnly
-                          className="w-full cursor-not-allowed rounded-lg border border-gray-300 bg-gray-100 px-4 py-3 text-gray-500"
+                          className="w-full cursor-not-allowed rounded-lg border border-gray-300 bg-gray-100 px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-500"
                         />
                         <p className="mt-1 text-xs text-gray-500">
                           Email cannot be changed
@@ -352,11 +352,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </div>
 
                       {/* Submit */}
-                      <div className="flex justify-end">
+                      <div className="flex justify-end pt-1 sm:pt-2">
                         <button
                           type="submit"
                           disabled={isLoading}
-                          className="rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold text-white shadow-lg transition-all hover:from-purple-700 hover:to-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-white shadow-lg transition-all hover:from-purple-700 hover:to-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {isLoading ? "Saving..." : "💾 Save changes"}
                         </button>
@@ -366,55 +366,55 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                   {/* Password Section */}
                   <form onSubmit={handleChangePassword}>
-                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+                    <h3 className="mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-900">
                       <span>🔒</span> Change Password
                     </h3>
 
-                    <div className="space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-6">
+                    <div className="space-y-3 sm:space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-4 sm:p-6">
                       {/* Current Password */}
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                        <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-gray-700">
                           Current Password
                         </label>
                         <input
                           type="password"
                           value={currentPassword}
                           onChange={(e) => setCurrentPassword(e.target.value)}
-                          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                          className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-900 transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                           placeholder="Enter current password"
                         />
                       </div>
 
                       {/* New Password */}
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                        <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-gray-700">
                           New Password
                         </label>
                         <input
                           type="password"
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
-                          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                          className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-900 transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                           placeholder="Enter new password (minimum 8 characters)"
                         />
                       </div>
 
                       {/* Confirm Password */}
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                        <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-gray-700">
                           Confirm Password
                         </label>
                         <input
                           type="password"
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
-                          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                          className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-900 transition-all focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                           placeholder="Re-enter new password"
                         />
                       </div>
 
                       {/* Submit */}
-                      <div className="flex justify-end pt-2">
+                      <div className="flex justify-end pt-1 sm:pt-2">
                         <button
                           type="submit"
                           disabled={
@@ -423,7 +423,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             !newPassword ||
                             !confirmPassword
                           }
-                          className="rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold text-white shadow-lg transition-all hover:from-purple-700 hover:to-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-white shadow-lg transition-all hover:from-purple-700 hover:to-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {isLoading ? "Processing..." : "🔑 Change password"}
                         </button>

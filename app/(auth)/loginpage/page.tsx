@@ -63,7 +63,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-6 sm:py-8">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-3 sm:px-4 py-4 sm:py-6 md:py-8">
       {/* Animated background */}
       <div className="fixed inset-0 z-0">
         {/* Gradient background */}
@@ -115,18 +115,18 @@ function LoginContent() {
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-md"
+        className="relative z-10 w-full max-w-md mx-auto"
       >
         {/* Glow effect behind card */}
-        <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 blur-2xl"></div>
+        <div className="absolute -inset-2 sm:-inset-4 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 blur-2xl"></div>
 
-        <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-8 shadow-2xl backdrop-blur-2xl sm:p-10">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/20 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 sm:p-8 md:p-10 shadow-2xl backdrop-blur-2xl">
           {/* Shine effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"></div>
 
           {/* Logo section */}
           <motion.div
-            className="mb-8 flex justify-center"
+            className="mb-6 sm:mb-8 flex justify-center"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
@@ -137,7 +137,7 @@ function LoginContent() {
               transition={{ duration: 0.6 }}
             >
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 opacity-75 blur-xl"></div>
-              <div className="relative h-24 w-24 rounded-full border-4 border-white/30 bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-1">
+              <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full border-4 border-white/30 bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-1">
                 <Image
                   src="/logo/OIP.jpg"
                   alt="Alliance Logo"
@@ -150,15 +150,15 @@ function LoginContent() {
 
           {/* Title section */}
           <motion.div
-            className="mb-10 text-center"
+            className="mb-6 sm:mb-10 text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <h1 className="mb-3 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-4xl font-bold text-transparent">
+            <h1 className="mb-2 sm:mb-3 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-3xl sm:text-4xl font-bold text-transparent">
               Welcome back
             </h1>
-            <p className="text-base text-gray-300/90">
+            <p className="text-sm sm:text-base text-gray-300/90">
               Log in{" "}
               <span className="font-semibold text-purple-300">
                 Alliance Organization :v
@@ -174,12 +174,12 @@ function LoginContent() {
                 animate={{ opacity: 1, scale: 1, height: "auto" }}
                 exit={{ opacity: 0, scale: 0.9, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="mb-6 overflow-hidden"
+                className="mb-4 sm:mb-6 overflow-hidden"
               >
-                <div className="flex items-start gap-3 rounded-xl border border-red-400/30 bg-gradient-to-br from-red-500/20 to-pink-500/20 px-4 py-4 backdrop-blur-sm">
+                <div className="flex items-start gap-2 sm:gap-3 rounded-xl border border-red-400/30 bg-gradient-to-br from-red-500/20 to-pink-500/20 px-3 sm:px-4 py-3 sm:py-4 backdrop-blur-sm">
                   <div className="mt-0.5 flex-shrink-0">
                     <svg
-                      className="h-5 w-5 text-red-300"
+                      className="h-4 w-4 sm:h-5 sm:w-5 text-red-300"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -192,15 +192,17 @@ function LoginContent() {
                       />
                     </svg>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-red-100">{error}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-red-100 break-words">
+                      {error}
+                    </p>
                   </div>
                   <button
                     onClick={() => setError("")}
                     className="flex-shrink-0 text-red-200 transition-colors hover:text-white"
                   >
                     <svg
-                      className="h-5 w-5"
+                      className="h-4 w-4 sm:h-5 sm:w-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -219,26 +221,26 @@ function LoginContent() {
           </AnimatePresence>
 
           {/* Login form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Email input */}
             <motion.div
-              className="space-y-2"
+              className="space-y-1.5 sm:space-y-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
             >
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-gray-200"
+                className="block text-xs sm:text-sm font-semibold text-gray-200"
               >
                 Email
               </label>
               <div className="relative group">
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 blur transition-opacity group-hover:opacity-100"></div>
                 <div className="relative flex items-center">
-                  <div className="absolute left-4 text-gray-400 transition-colors group-hover:text-purple-400">
+                  <div className="absolute left-3 sm:left-4 text-gray-400 transition-colors group-hover:text-purple-400">
                     <svg
-                      className="h-5 w-5"
+                      className="h-4 w-4 sm:h-5 sm:w-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -258,7 +260,7 @@ function LoginContent() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     autoComplete="email"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 py-4 pl-12 pr-4 text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10 focus:border-purple-400 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 py-3 sm:py-4 pl-10 sm:pl-12 pr-3 sm:pr-4 text-sm sm:text-base text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10 focus:border-purple-400 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/50 disabled:cursor-not-allowed disabled:opacity-50"
                     placeholder="your.email@example.com"
                     disabled={isLoading}
                   />
@@ -268,23 +270,23 @@ function LoginContent() {
 
             {/* Password input */}
             <motion.div
-              className="space-y-2"
+              className="space-y-1.5 sm:space-y-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
             >
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-gray-200"
+                className="block text-xs sm:text-sm font-semibold text-gray-200"
               >
                 Password
               </label>
               <div className="relative group">
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 blur transition-opacity group-hover:opacity-100"></div>
                 <div className="relative flex items-center">
-                  <div className="absolute left-4 text-gray-400 transition-colors group-hover:text-purple-400">
+                  <div className="absolute left-3 sm:left-4 text-gray-400 transition-colors group-hover:text-purple-400">
                     <svg
-                      className="h-5 w-5"
+                      className="h-4 w-4 sm:h-5 sm:w-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -304,7 +306,7 @@ function LoginContent() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     autoComplete="current-password"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 py-4 pl-12 pr-12 text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10 focus:border-purple-400 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 py-3 sm:py-4 pl-10 sm:pl-12 pr-10 sm:pr-12 text-sm sm:text-base text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10 focus:border-purple-400 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/50 disabled:cursor-not-allowed disabled:opacity-50"
                     placeholder="••••••••••"
                     disabled={isLoading}
                   />
@@ -312,12 +314,12 @@ function LoginContent() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     tabIndex={-1}
-                    className="absolute right-4 text-gray-400 transition-colors hover:text-purple-400"
+                    className="absolute right-3 sm:right-4 text-gray-400 transition-colors hover:text-purple-400"
                     disabled={isLoading}
                   >
                     {showPassword ? (
                       <svg
-                        className="h-5 w-5"
+                        className="h-4 w-4 sm:h-5 sm:w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -331,7 +333,7 @@ function LoginContent() {
                       </svg>
                     ) : (
                       <svg
-                        className="h-5 w-5"
+                        className="h-4 w-4 sm:h-5 sm:w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -363,18 +365,18 @@ function LoginContent() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
                   transition={{ duration: 0.3 }}
-                  className="relative overflow-hidden rounded-2xl border border-yellow-400/30 bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-orange-500/10 p-4 shadow-lg shadow-yellow-500/20 backdrop-blur-sm"
+                  className="relative overflow-hidden rounded-xl sm:rounded-2xl border border-yellow-400/30 bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-orange-500/10 p-3 sm:p-4 shadow-lg shadow-yellow-500/20 backdrop-blur-sm"
                 >
                   {/* Animated background glow */}
                   <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-yellow-400/5 via-amber-400/10 to-yellow-400/5"></div>
 
                   {/* Content */}
-                  <div className="relative flex items-start gap-3">
+                  <div className="relative flex items-start gap-2 sm:gap-3">
                     {/* Icon */}
                     <div className="flex-shrink-0">
-                      <div className="rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 p-2 shadow-lg shadow-yellow-500/50">
+                      <div className="rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 p-1.5 sm:p-2 shadow-lg shadow-yellow-500/50">
                         <svg
-                          className="h-5 w-5 text-white"
+                          className="h-4 w-4 sm:h-5 sm:w-5 text-white"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -388,11 +390,11 @@ function LoginContent() {
                     </div>
 
                     {/* Text */}
-                    <div className="flex-1 space-y-1">
-                      <h4 className="flex items-center gap-2 text-sm font-bold text-yellow-300">
+                    <div className="flex-1 space-y-0.5 sm:space-y-1 min-w-0">
+                      <h4 className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-yellow-300">
                         <span>🌟 Special Admin Account Detected</span>
                       </h4>
-                      <p className="text-xs leading-relaxed text-yellow-200/90">
+                      <p className="text-xs leading-relaxed text-yellow-200/90 break-words">
                         This account has{" "}
                         <span className="font-semibold text-yellow-300">
                           special privileges
@@ -423,20 +425,20 @@ function LoginContent() {
               transition={{ delay: 0.6 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative mt-8 w-full overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-size-200 px-6 py-4 font-bold text-white shadow-2xl shadow-purple-500/50 transition-all duration-500 hover:bg-pos-100 hover:shadow-purple-500/60 focus:outline-none focus:ring-4 focus:ring-purple-500/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+              className="group relative mt-6 sm:mt-8 w-full overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-size-200 px-4 sm:px-6 py-3 sm:py-4 font-bold text-white shadow-2xl shadow-purple-500/50 transition-all duration-500 hover:bg-pos-100 hover:shadow-purple-500/60 focus:outline-none focus:ring-4 focus:ring-purple-500/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
               <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
 
               {isLoading ? (
-                <div className="relative flex items-center justify-center gap-3">
-                  <div className="h-5 w-5 animate-spin rounded-full border-3 border-white border-t-transparent"></div>
-                  <span className="text-lg">Logging in...</span>
+                <div className="relative flex items-center justify-center gap-2 sm:gap-3">
+                  <div className="h-4 w-4 sm:h-5 sm:w-5 animate-spin rounded-full border-2 sm:border-3 border-white border-t-transparent"></div>
+                  <span className="text-base sm:text-lg">Logging in...</span>
                 </div>
               ) : (
-                <span className="relative flex items-center justify-center gap-2 text-lg">
+                <span className="relative flex items-center justify-center gap-1.5 sm:gap-2 text-base sm:text-lg">
                   Log in
                   <svg
-                    className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-2"
+                    className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:translate-x-2"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -455,15 +457,15 @@ function LoginContent() {
 
           {/* Footer info */}
           <motion.div
-            className="mt-10 text-center"
+            className="mt-6 sm:mt-10 text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
           >
-            <div className="mb-4 flex items-center justify-center gap-2">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-white/20"></div>
+            <div className="mb-3 sm:mb-4 flex items-center justify-center gap-1.5 sm:gap-2">
+              <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-white/20"></div>
               <svg
-                className="h-5 w-5 text-purple-300"
+                className="h-4 w-4 sm:h-5 sm:w-5 text-purple-300 flex-shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -473,11 +475,11 @@ function LoginContent() {
                   clipRule="evenodd"
                 />
               </svg>
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-white/20"></div>
+              <div className="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-white/20"></div>
             </div>
-            <p className="text-sm text-gray-300/80">
+            <p className="text-xs sm:text-sm text-gray-300/80 px-2">
               Do not have an account?{" "}
-              <span className="font-semibold text-purple-300">
+              <span className="font-semibold text-purple-300 whitespace-nowrap">
                 Contact admin for access
               </span>
             </p>
@@ -485,8 +487,8 @@ function LoginContent() {
         </div>
 
         {/* Additional decorative elements */}
-        <div className="pointer-events-none absolute -left-8 -top-8 h-40 w-40 rounded-full bg-gradient-to-br from-purple-500/30 to-transparent blur-2xl"></div>
-        <div className="pointer-events-none absolute -bottom-8 -right-8 h-40 w-40 rounded-full bg-gradient-to-tl from-pink-500/30 to-transparent blur-2xl"></div>
+        <div className="pointer-events-none absolute -left-6 sm:-left-8 -top-6 sm:-top-8 h-32 w-32 sm:h-40 sm:w-40 rounded-full bg-gradient-to-br from-purple-500/30 to-transparent blur-2xl"></div>
+        <div className="pointer-events-none absolute -bottom-6 sm:-bottom-8 -right-6 sm:-right-8 h-32 w-32 sm:h-40 sm:w-40 rounded-full bg-gradient-to-tl from-pink-500/30 to-transparent blur-2xl"></div>
       </motion.div>
 
       {/* Create Account Modal */}

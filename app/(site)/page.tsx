@@ -39,7 +39,7 @@ export default function HomePage() {
       icon: "👥",
       title: "Members",
       description: "Gặp gỡ các thành viên của gia đình Alliance",
-      href: "/about#members",
+      href: "/members",
       gradient: "from-cyan-600 to-teal-600",
       hoverGradient: "from-cyan-700 to-teal-700",
     },

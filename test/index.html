@@ -1,0 +1,498 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oceanami Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <canvas id="space" aria-hidden="true"></canvas>
+    <div class="bg-gradient" aria-hidden="true"></div>
+    <div id="preloader">
+        <div class="custom-loader-content">
+            <h1 class="preloader-title">Oceanami From VietNam</h1>
+            <div class="underline-bar"></div>
+        </div>
+    </div>
+    </div>
+    <div id="mouse-follower"></div>
+    <header class="header">
+        <a href="#home" class="logo highlight">Oceanami</a>
+
+        <nav class="nav">
+            <ul class="nav-menu">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#experiences" class="nav-link">Experiences</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+    </header>
+
+    <section id="home" class="home-section">
+        <div class="hero-content">
+            <div class="tag">Software Engineer</div>
+            <h1 class="hero-title">Hi, I'm <span class="highlight">Oceanami</span></h1>
+            <p class="hero-desc">I craft smart digital experiences using modern technologies with creativity and care.
+            </p>
+            <div class="hero-homebuttons">
+                <a href="https://github.com/Ocennami" class="primary" target="_blank">View Projects →</a>
+                <a href="#contact" class="secondary">Contact Me</a>
+            </div>
+        </div>
+        <div class="tech-particles">
+            <canvas id="particles-bg"></canvas>
+        </div>
+        <a href="#about" class="scroll-indicator" aria-label="Scroll down">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </a>
+        </div>
+    </section>
+
+    <section id="about" class="about-section fade-in-section">
+        <div class="about-container">
+            <div class="tagabout">My Background</div>
+            <h2 class="about-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-image-wrapper">
+                    <div class="about-image">
+                        <img src="picture/avatar.jpg" alt="Oceanami" onerror="this.src='https://via.placeholder.com/400x500/1a1625/c4b5fd?text=Your+Image+Here'">
+                        <div class="image-glow"></div>
+                    </div>
+                    <div class="availability-badge">
+                        <span class="status-dot"></span>
+                        Available for work
+                    </div>
+                </div>
+                <div class="about-box">
+                    <p class="about-desc">
+                        I am Oceanami – a programmer from Vietnam, who loves the combination of logic and creativity to
+                        build valuable digital products. Whether it is a useful software or an interesting game, I am
+                        meticulous, careful and eager to learn, along with a desire to develop.
+                    </p>
+
+                    <p class="about-desc">
+                        I specialize in software development, optimization, love playing and creating games, always
+                        exploring new technologies to improve my skills, and I also have a passion for the Minecraft 
+                        world with its endless programming possibilities. I have been fascinated with computers since 
+                        I was 10 years old, started playing Minecraft in 2018 and immediately became interested in 
+                        creating a Minecraft server from 2019 until now. Currently, I am working on a project myself 
+                        with the aim of creating an interesting playground for friends and improving my thinking and 
+                        programming skills.
+                    </p>
+                    <p class="about-info"><strong>Full Name:</strong> Đặng Tuấn Hùng</p>
+                    <p class="about-info"><strong>Nickname:</strong> Oceanami</p>
+                    <p class="about-info"><strong>Location:</strong> Viet Nam 🇻🇳</p>
+                    <p class="about-info"><strong>Email:</strong> dangtuanhung2354@gmail.com</p>
+                    <p class="about-info">
+                        <strong>Availability:</strong>
+                        <span class="available">Open to opportunities</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills-section fade-in-section">
+        <div class="skills-container">
+            <div class="tagskills">Skills</div>
+            <h2 class="skills-title">My Skills</h2>
+            <div class="skill-container">
+                <h2>
+                    Found 7 skills in my GitHub repositories
+                    <span class="subtext">(Project only shows the most used skills first)</span>
+                </h2>
+
+                <div class="badge-list">
+                    <button class="skill-badge" data-skill="html"><span class="dot" style="color: #E34F26;">●</span>
+                        HTML </button>
+                    <button class="skill-badge" data-skill="css"><span class="dot" style="color: #2965f1;">●</span> CSS
+                    </button>
+                    <button class="skill-badge" data-skill="javascript"><span class="dot"
+                            style="color: #f7df1e;">●</span> JavaScript </button>
+                    <button class="skill-badge" data-skill="java"><span class="dot" style="color: #FF7800;">●</span>
+                        Java </button>
+                    <button class="skill-badge" data-skill="csharp"><span class="dot" style="color: #68217A;">●</span>
+                        C# </button>
+                    <button class="skill-badge" data-skill="cpp"><span class="dot" style="color: #00599C;">●</span> C++
+                    </button>
+                        <button class="skill-badge" data-skill="python"><span class="dot" style="color: #3776AB;">●</span>
+                            Python </button>
+                </div>
+
+                <div class="skill-panel" id="panel-container">
+                    <button class="close-btn" onclick="closePanel()">×</button>
+                    <div id="panel-content"></div>
+                </div>
+            </div>
+
+            <p class="note">
+                Click on any skill badge to see the original GitHub repositories where it was used
+            </p>
+        </div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects-section fade-in-section">
+        <div class="projects-container">
+            <div class="tagprojects">Projects</div>
+            <h2 class="projects-title">My Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="picture/Projects/PortfolioProject.png" alt="PortfolioProject Image" class="preview" />
+                    </div>
+                    <div class="content">
+                        <h3>Portfolio Modern</h3>
+                        <p class="description">
+                            A visually stunning, modern portfolio website built with HTML, CSS and JavaScript, combine
+                            with Canvas API to create interactive effects and smooth animations, providing an engaging
+                            experience for viewers.
+                        </p>
+
+                        <div class="card-body">
+                            <div class="tags">
+                                <span class="github"><i class="fab fa-github"></i> GitHub Topics</span>
+                                <span class="badge">HTML</span>
+                                <span class="badge">CSS</span>
+                                <span class="badge">JavaScript</span>
+                            </div>
+
+                            <div class="tech-bar">
+                                <div class="bar html" style="width: 45%"></div>
+                                <div class="bar css" style="width: 30%"></div>
+                                <div class="bar js" style="width: 25%"></div>
+                            </div>
+                            <div class="tech-legend">
+                                <span><span class="dot html"></span> HTML</span>
+                                <span><span class="dot css"></span> CSS</span>
+                                <span><span class="dot javascript"></span> JS</span>
+                            </div>
+                            <hr class="divider" />
+                            <div class="buttons">
+                                <a href="https://github.com/Ocennami/Portfolio" class="project-btn"><i class="fab fa-github"></i> Code</a>
+                                <a href="https://www.oceanami.tech/" class="project-btn demo">Live Demo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="picture/Projects/ParkourProject.png" alt="ParkourProject Image" class="preview" />
+                    </div>
+                    <div class="content">
+                        <h3>Parkour Plugin Minecraft</h3>
+                        <p class="description">
+                            Parkour Plugin System is created to suit Aorganiz Private Server.
+                        </p>
+
+                        <div class="card-body">
+                            <div class="tags">
+                                <span class="github"><i class="fab fa-github"></i> GitHub Topics</span>
+                                <span class="badge">Java</span>
+                            </div>
+
+                            <div class="tech-bar">
+                                <div class="bar java" style="width: 100%"></div>
+                            </div>
+                            <div class="tech-legend">
+                                <span><span class="dot java"></span> Java</span>
+                            </div>
+                            <hr class="divider" />
+                            <div class="buttons">
+                                <a href="https://github.com/Ocennami/Parkour" class="project-btn"><i
+                                        class="fab fa-github"></i> Code</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="picture/Projects/BlockChainGameProject.png" alt="BlockChainGameProject Image" class="preview" />
+                    </div>
+                    <div class="content">
+                        <h3>Word Chain Game</h3>
+                        <p class="description">
+                            Bot Discord play minigame word chain game.
+                        </p>
+
+                        <div class="card-body">
+                            <div class="tags">
+                                <span class="github"><i class="fab fa-github"></i> GitHub Topics</span>
+                                <span class="badge">Python</span>
+                            </div>
+
+                            <div class="tech-bar">
+                                <div class="bar python" style="width: 100%"></div>
+                            </div>
+                            <div class="tech-legend">
+                                <span><span class="dot python"></span> Python</span>
+                            </div>
+                            <hr class="divider" />
+                            <div class="buttons">
+                                <a href="https://github.com/Ocennami/Word-Chain-Game" class="project-btn"><i
+                                        class="fab fa-github"></i> Code</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="picture/Projects/OceanamiApps.png" alt="OceanamiApps Image" class="preview" />
+                    </div>
+                    <div class="content">
+                        <h3>OceanamiApps</h3>
+                        <p class="description">
+                            Website of Apps developed by Oceanami. In here, you can download apps developed by Oceanami.
+                        </p>
+
+                        <div class="card-body">
+                            <div class="tags">
+                                <span class="github"><i class="fab fa-github"></i> GitHub Topics</span>
+                                <span class="badge">TypeScript</span>
+                                <span class="badge">CSS</span>
+                                <span class="badge">PLpgSQL</span>
+                                <span class="badge">JavaScript</span>
+                                <span class="badge">HTML</span>
+                            </div>
+
+                            <div class="tech-bar">
+                                <div class="bar typescript" style="width: 54.2%"></div>
+                                <div class="bar css" style="width: 36.5%"></div>
+                                <div class="bar plpgsql" style="width: 6.3%"></div>
+                                <div class="bar js" style="width: 1.9%"></div>
+                                <div class="bar html" style="width: 1.1%"></div>
+                            </div>
+                            <div class="tech-legend">
+                                <span><span class="dot typescript"></span> TypeScript</span>
+                                <span><span class="dot css"></span> CSS</span>
+                                <span><span class="dot plpgsql"></span> PLpgSQL</span>
+                                <span><span class="dot javascript"></span> JavaScript</span>
+                                <span><span class="dot html"></span> HTML</span>
+                            </div>
+                            <hr class="divider" />
+                            <div class="buttons">
+                                <a href="https://github.com/Ocennami/OceanamiApps" class="project-btn"><i
+                                        class="fab fa-github"></i> Code</a>
+                                <a href="https://www.oceanami.app/" class="project-btn demo">Live Demo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="content">
+                        <h3>Comming soon...</h3>
+                        <p class="description">
+                            New project is in development. stay tuned for updates and be the first to know when it launches!
+                        </p>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <section id="experiences" class="experiences-section fade-in-section">
+        <div class="experiences-container">
+            <div class="tagexperiences">Experiences</div>
+            <h2 class="experiences-title">Works Experience</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Owner Group</h3>
+                        <p class="timeline-date">Alliance Organization ":v" | 2021 - Future</p>
+                        <div class="experience-image">
+                            <img src="picture/Experiences/mygroup.jpg" alt="Owner Group Experience" />
+                        </div>
+                        <p class="timeline-desc">
+                            I am still the owner of the Alliance Organization group ":v".
+                        </p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Studying high school</h3>
+                        <p class="timeline-date">Tran Nhan Tong High School - Quang Ninh | 2023 - 2025</p>
+                        <div class="experience-image">
+                            <img src="picture/Experiences/TNTHighSchool.jpg" alt="High School Experience" />
+                        </div>
+                        <p class="timeline-desc">
+                            I have graduated from Tran Nhan Tong High School - Quang Ninh.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Working on my own project</h3>
+                        <p class="timeline-date">Oceanami's Github | 2024 - Future</p>
+                        <div class="experience-image">
+                            <img src="picture/Experiences/mygithub.png" alt="Personal Projects" />
+                        </div>
+                        <p class="timeline-desc">
+                            I used to have a github account in 2024 but it was lost for some reason and I can't find it again *so sad* 
+                            but I will try because my goal is to develop and deploy many of my own projects to improve my learning process and expertise.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>University</h3>
+                        <p class="timeline-date">Electric Power University | 2025 - 2030 (4.5 years)</p>
+                        <div class="experience-image">
+                            <img src="picture/Experiences/epu.jpg" alt="University Experience" />
+                        </div>
+                        <p class="timeline-desc">
+                            I am currently studying at Electric Power University majoring in Software Engineering.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section fade-in-section">
+        <div class="contact-container">
+            <div class="tagcontact">Contact</div>
+            <h2 class="contact-title">My Contact</h2>
+
+            <div class="contact-layout">
+
+                <div class="contact-box">
+                    <h3 class="contact-box-title">Contact Information</h3>
+                    <div class="contact-info">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <span>dangtuanhung2354@gmail.com</span>
+                        </div>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fab fa-linkedin-in"></i>
+                        <div>
+                            <strong>LinkedIn</strong>
+                            <span>linkedin.com/in/hung-dang-tuan-9a618737a/</span>
+                        </div>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fab fa-github"></i>
+                        <div>
+                            <strong>Github</strong>
+                            <span>github.com/Ocennami</span>
+                        </div>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fab fa-discord"></i>
+                        <div>
+                            <strong>Discord</strong>
+                            <span>ocenami_2354</span>
+                        </div>
+                    </div>
+                    <div class="contact-status">
+                        <strong><i class="fas fa-circle online-dot"></i> Current Status</strong>
+                        <span class="available-contact">Available for freelance work and full-time opportunities</span>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <h3 class="contact-box-title">Send Me a Message</h3>
+                    <form action="https://formspree.io/f/myzpvrbk" method="POST">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="4" placeholder="Your Message"
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="send-button">
+                            Send Message <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-top-border"></div>
+
+        <div class="footer-content">
+            <div class="footer-left">
+                <h2><span class="highlight">Ocea</span>nami</h2>
+                <p>© <span id="year"></span> Oceanami. All rights reserved.</p>
+            </div>
+
+            <div class="footer-social">
+                <a href="https://github.com/Ocennami" class="social-icon"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/hung-dang-tuan-9a618737a/" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#contact" class="social-icon"><i class="fas fa-envelope"></i></a>
+                <a href="https://www.facebook.com/anghung.358819/" class="social-icon"><i
+                        class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-nav">
+            <a href="#home">Home</a>
+            <a href="#projects">Projects</a>
+        </div>
+    </footer>
+    <aside class="music-player" aria-label="Music player">
+        <img class="player-cover" src="picture/Music Images/MỘT NGÀY CHÚNG TA KHÔNG CÒN GẶP.jpg" alt="Album art">
+        <div class="player-meta">
+            <span class="player-title">Nếu một ngày chúng ta không còn gặp</span>
+            <span class="player-artist">2CAN</span>
+        </div>
+        <div class="player-controls">
+            <button type="button" class="player-btn" data-action="prev" aria-label="Previous track">
+                <i class="fas fa-backward"></i>
+            </button>
+            <button type="button" class="player-btn player-toggle" data-action="toggle" aria-label="Play or pause">
+                <i class="fas fa-play"></i>
+            </button>
+            <button type="button" class="player-btn" data-action="next" aria-label="Next track">
+                <i class="fas fa-forward"></i>
+            </button>
+            <a class="player-btn player-link" href="#" target="_blank" rel="noopener" aria-label="Open track">
+                <i class="fas fa-up-right-from-square"></i>
+            </a>
+        </div>
+        <audio class="player-audio" preload="metadata"></audio>
+    </aside>
+    <script src="script.js"></script>
+</body>
+
+</html>

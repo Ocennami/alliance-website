@@ -1,0 +1,105 @@
+/* VS Code Dark+ Theme for Code Editor */
+
+/* Override Prism Tomorrow theme with VS Code colors */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a9955 !important; /* Green comments like VS Code */
+}
+
+.token.punctuation {
+  color: #d4d4d4 !important; /* Light gray */
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #569cd6 !important; /* Blue like VS Code */
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #ce9178 !important; /* Orange-ish string color */
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #d4d4d4 !important;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #c586c0 !important; /* Purple keywords */
+}
+
+.token.function,
+.token.class-name {
+  color: #dcdcaa !important; /* Yellow functions */
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #9cdcfe !important; /* Light blue variables */
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* Code editor container styles */
+.npm__react-simple-code-editor__textarea,
+.npm__react-simple-code-editor__textarea:focus {
+  outline: none !important;
+  caret-color: #fff !important;
+}
+
+/* Line numbers styling */
+.npm__react-simple-code-editor__container {
+  counter-reset: line;
+}
+
+/* Scrollbar styling for VS Code look */
+.npm__react-simple-code-editor__textarea::-webkit-scrollbar,
+.npm__react-simple-code-editor__container::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.npm__react-simple-code-editor__textarea::-webkit-scrollbar-track,
+.npm__react-simple-code-editor__container::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.npm__react-simple-code-editor__textarea::-webkit-scrollbar-thumb,
+.npm__react-simple-code-editor__container::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 5px;
+}
+
+.npm__react-simple-code-editor__textarea::-webkit-scrollbar-thumb:hover,
+.npm__react-simple-code-editor__container::-webkit-scrollbar-thumb:hover {
+  background: #4e4e4e;
+}

@@ -42,17 +42,45 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Lấy thông tin user từ bảng profiles (nếu có)
-          const { data: profile } = await supabase
+          const profileResult = await supabase
             .from("profiles")
             .select("*")
             .eq("id", data.user.id)
             .single();
 
+          let profileData = profileResult.data;
+
+          // Nếu chưa có profile, tạo mới
+          if (!profileData) {
+            console.log("Creating new profile for user:", data.user.id);
+            const newProfile = {
+              id: data.user.id,
+              name: data.user.email?.split("@")[0] || "User",
+              role: "Member",
+              bio: "",
+              joined_at: new Date().toISOString(),
+              achievements: [],
+              favorite_game: "",
+              quote: "",
+              avatar_url: null,
+            };
+
+            const { error: insertError } = await supabase
+              .from("profiles")
+              .insert([newProfile]);
+
+            if (insertError) {
+              console.error("Error creating profile:", insertError);
+            } else {
+              profileData = newProfile;
+            }
+          }
+
           return {
             id: data.user.id,
             email: data.user.email!,
-            name: profile?.name || data.user.email?.split("@")[0] || "User",
-            image: profile?.avatar_url || null,
+            name: profileData?.name || data.user.email?.split("@")[0] || "User",
+            image: profileData?.avatar_url || null,
           };
         } catch (error) {
           console.error("Authentication error:", error);

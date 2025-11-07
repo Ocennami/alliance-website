@@ -18,6 +18,8 @@ interface ProfileCodeEditorProps {
   initialCss?: string;
   initialJs?: string;
   onSave: (html: string, css: string, js: string) => void;
+  readOnly?: boolean;
+  profileOwnerName?: string;
 }
 
 export default function ProfileCodeEditor({
@@ -27,6 +29,8 @@ export default function ProfileCodeEditor({
   initialCss = "",
   initialJs = "",
   onSave,
+  readOnly = false,
+  profileOwnerName = "User",
 }: ProfileCodeEditorProps) {
   const [html, setHtml] = useState(initialHtml);
   const [css, setCss] = useState(initialCss);
@@ -137,10 +141,14 @@ export default function ProfileCodeEditor({
                   <FiCode className="w-6 h-6 text-blue-400" />
                   <div className="flex flex-col">
                     <h2 className="text-white font-semibold text-base">
-                      Custom Profile Code Editor
+                      {readOnly
+                        ? `Viewing ${profileOwnerName}'s Profile Code`
+                        : "Custom Profile Code Editor"}
                     </h2>
                     <p className="text-gray-500 text-xs">
-                      Design your unique profile with HTML, CSS & JavaScript
+                      {readOnly
+                        ? "View-only mode - You cannot edit this profile"
+                        : "Design your unique profile with HTML, CSS & JavaScript"}
                     </p>
                   </div>
                 </div>
@@ -160,13 +168,15 @@ export default function ProfileCodeEditor({
                     <FiEye className="w-4 h-4" />
                     Refresh
                   </button>
-                  <button
-                    onClick={handleSave}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md transition-all text-white text-sm font-medium flex items-center gap-2 shadow-lg shadow-green-600/20"
-                  >
-                    <FiSave className="w-4 h-4" />
-                    Save
-                  </button>
+                  {!readOnly && (
+                    <button
+                      onClick={handleSave}
+                      className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md transition-all text-white text-sm font-medium flex items-center gap-2 shadow-lg shadow-green-600/20"
+                    >
+                      <FiSave className="w-4 h-4" />
+                      Save
+                    </button>
+                  )}
                   <button
                     onClick={onClose}
                     className="text-gray-400 hover:text-white p-2 hover:bg-white/5 rounded-md transition-all"
@@ -201,7 +211,7 @@ export default function ProfileCodeEditor({
                     <div className="flex-1 overflow-auto">
                       <Editor
                         value={html}
-                        onValueChange={setHtml}
+                        onValueChange={readOnly ? () => {} : setHtml}
                         highlight={(code) =>
                           Prism.highlight(
                             code,
@@ -212,6 +222,7 @@ export default function ProfileCodeEditor({
                         padding={16}
                         className="font-mono text-sm"
                         textareaClassName="focus:outline-none"
+                        disabled={readOnly}
                         style={{
                           fontFamily:
                             "'Fira Code', 'Consolas', 'Monaco', monospace",
@@ -220,8 +231,14 @@ export default function ProfileCodeEditor({
                           color: "#d4d4d4",
                           minHeight: "100%",
                           lineHeight: "1.5rem",
+                          opacity: readOnly ? 0.8 : 1,
+                          cursor: readOnly ? "not-allowed" : "text",
                         }}
-                        placeholder="<!-- Enter your HTML code here -->"
+                        placeholder={
+                          readOnly
+                            ? "<!-- No HTML code -->"
+                            : "<!-- Enter your HTML code here -->"
+                        }
                       />
                     </div>
                   </div>
@@ -242,13 +259,14 @@ export default function ProfileCodeEditor({
                     <div className="flex-1 overflow-auto">
                       <Editor
                         value={css}
-                        onValueChange={setCss}
+                        onValueChange={readOnly ? () => {} : setCss}
                         highlight={(code) =>
                           Prism.highlight(code, Prism.languages.css, "css")
                         }
                         padding={16}
                         className="font-mono text-sm"
                         textareaClassName="focus:outline-none"
+                        disabled={readOnly}
                         style={{
                           fontFamily:
                             "'Fira Code', 'Consolas', 'Monaco', monospace",
@@ -257,8 +275,14 @@ export default function ProfileCodeEditor({
                           color: "#d4d4d4",
                           minHeight: "100%",
                           lineHeight: "1.5rem",
+                          opacity: readOnly ? 0.8 : 1,
+                          cursor: readOnly ? "not-allowed" : "text",
                         }}
-                        placeholder="/* Enter your CSS code here */"
+                        placeholder={
+                          readOnly
+                            ? "/* No CSS code */"
+                            : "/* Enter your CSS code here */"
+                        }
                       />
                     </div>
                   </div>
@@ -279,7 +303,7 @@ export default function ProfileCodeEditor({
                     <div className="flex-1 overflow-auto">
                       <Editor
                         value={js}
-                        onValueChange={setJs}
+                        onValueChange={readOnly ? () => {} : setJs}
                         highlight={(code) =>
                           Prism.highlight(
                             code,
@@ -290,6 +314,7 @@ export default function ProfileCodeEditor({
                         padding={16}
                         className="font-mono text-sm"
                         textareaClassName="focus:outline-none"
+                        disabled={readOnly}
                         style={{
                           fontFamily:
                             "'Fira Code', 'Consolas', 'Monaco', monospace",
@@ -298,8 +323,14 @@ export default function ProfileCodeEditor({
                           color: "#d4d4d4",
                           minHeight: "100%",
                           lineHeight: "1.5rem",
+                          opacity: readOnly ? 0.8 : 1,
+                          cursor: readOnly ? "not-allowed" : "text",
                         }}
-                        placeholder="// Enter your JavaScript code here"
+                        placeholder={
+                          readOnly
+                            ? "// No JavaScript code"
+                            : "// Enter your JavaScript code here"
+                        }
                       />
                     </div>
                   </div>
@@ -333,10 +364,11 @@ export default function ProfileCodeEditor({
               {/* Footer Tip - CodePen style */}
               <div className="bg-[#131417] border-t border-gray-800 px-6 py-3 text-xs text-gray-500 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-base">💡</span>
+                  <span className="text-base">{readOnly ? "👀" : "💡"}</span>
                   <span>
-                    Your custom code will be displayed in your profile. Create
-                    something unique!
+                    {readOnly
+                      ? `You are viewing ${profileOwnerName}'s custom profile code in read-only mode.`
+                      : "Your custom code will be displayed in your profile. Create something unique!"}
                   </span>
                 </div>
                 <span className="text-gray-600">

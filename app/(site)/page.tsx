@@ -29,7 +29,7 @@ export default function HomePage() {
     },
     {
       icon: "🎪",
-      title: "Our Events",
+      title: "Gallery",
       description: "Khám phá các sự kiện, câu chuyện và kỷ niệm đáng nhớ",
       href: "/gallery",
       gradient: "from-pink-600 to-rose-600",

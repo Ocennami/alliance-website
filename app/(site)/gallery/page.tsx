@@ -92,7 +92,8 @@ export default function GalleryPage() {
             🎊 Our Events & Memories
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Alliance Organization - Kết nối qua màn hình, gắn kết qua Minecraft
+            Alliance Organization &quot;:v&quot; - Kết nối qua màn hình, gắn kết
+            qua Minecraft
           </p>
           <p className="text-lg text-gray-600 mt-2">
             Từ server nổi tiếng aemine.vn đến những event đáng nhớ bên nhau

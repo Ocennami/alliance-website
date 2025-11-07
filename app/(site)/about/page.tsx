@@ -28,10 +28,11 @@ export default function AboutPage() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
-            About Alliance Organization
+            About Alliance Organization &quot;:v&quot;
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            From Alliance Organization - Your safe space for authentic stories
+            From Alliance Organization &quot;:v&quot; - Your safe space for
+            authentic stories
           </p>
         </motion.div>
 
@@ -52,9 +53,9 @@ export default function AboutPage() {
             </h2>
             <p className="text-gray-700 text-lg leading-relaxed">
               Alliance Organization &quot;:v&quot; là một cộng đồng được tạo ra
-              để kết nối các thành viên, chia sẻ kiến thức, và xây dựng một môi
-              trường học tập và làm việc tích cực. Chúng tôi tin rằng sự hợp tác
-              và chia sẻ là chìa khóa để phát triển.
+              để kết nối các thành viên với nhau. Tại đây chúng tôi chia sẻ với
+              nhau câu chuyện đời sống, kiến thức kinh nghiệm, giúp đỡ nhau học
+              tập.
             </p>
           </motion.section>
 
@@ -67,10 +68,10 @@ export default function AboutPage() {
               🔮 Our Vision
             </h2>
             <p className="text-gray-700 text-lg leading-relaxed">
-              Chúng tôi hướng tới việc xây dựng một nền tảng nơi mọi người có
-              thể tự do chia sẻ suy nghĩ, cảm xúc và trải nghiệm của mình trong
-              một không gian an toàn và tôn trọng lẫn nhau. Mỗi câu chuyện đều
-              có giá trị và đáng được lắng nghe.
+              Alliance Organization &quot;:v&quot; hướng tới việc xây dựng một
+              môi trường nơi mọi người có thể tự do chia sẻ suy nghĩ, cảm xúc và
+              trải nghiệm của mình trong một không gian an toàn và tôn trọng lẫn
+              nhau. Mỗi câu chuyện đều có giá trị và đáng được lắng nghe.
             </p>
           </motion.section>
 
@@ -107,7 +108,7 @@ export default function AboutPage() {
                   🔒 Safety
                 </h3>
                 <p className="text-gray-600">
-                  Đảm bảo môi trường an toàn cho mọi người chia sẻ
+                  Một môi trường an toàn cho mọi người chia sẻ
                 </p>
               </motion.div>
               <motion.div
@@ -148,12 +149,12 @@ export default function AboutPage() {
               👥 Our Team
             </h2>
             <p className="text-gray-700 text-lg leading-relaxed mb-4">
-              Alliance Organization được điều hành bởi một nhóm các thành viên
-              tận tâm, luôn sẵn sàng lắng nghe và hỗ trợ cộng đồng.
+              Alliance Organization &quot;:v&quot; hoạt động với một nhóm các
+              thành viên tận tâm, luôn sẵn sàng lắng nghe và hỗ trợ lẫn nhau.
             </p>
             <p className="text-gray-600 italic">
-              Chúng tôi không chỉ là một tổ chức, chúng tôi là một gia đình
-              &quot;:v&quot;
+              Chúng tôi không chỉ là một nhóm thông thường, chúng tôi chính là
+              một gia đình &quot;:v&quot;
             </p>
           </motion.section>
 

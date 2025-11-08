@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -51,21 +51,17 @@ export default function MembersPage() {
   );
   const [loading, setLoading] = useState(true);
 
-  // Kiểm tra đăng nhập
-  useEffect(() => {
-    if (status === "loading") return; // Đợi kiểm tra session
+  // Function to determine role rank order
+  const getRoleRank = (role: string): number => {
+    const roleLower = role.toLowerCase();
+    if (roleLower === "owner") return 1;
+    if (roleLower === "co-owner") return 2;
+    if (roleLower === "member") return 3;
+    if (roleLower === "bot") return 999;
+    return 4; // Other roles
+  };
 
-    if (status === "unauthenticated") {
-      // Chuyển hướng về trang login nếu chưa đăng nhập
-      router.push("/loginpage");
-    }
-  }, [status, router]);
-
-  useEffect(() => {
-    fetchMembers();
-  }, []);
-
-  const fetchMembers = async () => {
+  const fetchMembers = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -78,13 +74,44 @@ export default function MembersPage() {
       }
 
       console.log("Fetched members:", data);
-      setMembers(data || []);
+
+      // Sort by role rank first, then by joined_at
+      const sortedData = (data || []).sort((a, b) => {
+        const rankA = getRoleRank(a.role || "Member");
+        const rankB = getRoleRank(b.role || "Member");
+
+        // If role ranks are different, sort by rank
+        if (rankA !== rankB) {
+          return rankA - rankB;
+        }
+
+        // If role ranks are the same, sort by joined_at
+        return (
+          new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime()
+        );
+      });
+
+      setMembers(sortedData);
     } catch (error) {
       console.error("Error fetching members:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Check login status
+  useEffect(() => {
+    if (status === "loading") return; // Wait for session check
+
+    if (status === "unauthenticated") {
+      // Redirect to login page if not authenticated
+      router.push("/loginpage");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    fetchMembers();
+  }, [fetchMembers]);
 
   const handleEditClick = (member: MemberProfile) => {
     setEditingMemberId(member.id);
@@ -120,7 +147,7 @@ export default function MembersPage() {
     });
 
     try {
-      // Giữ lại custom code nếu có
+      // Keep custom code if exists
       const updateData: Partial<MemberProfile> = {
         name: editFormData.name,
         bio: editFormData.bio,
@@ -224,7 +251,7 @@ export default function MembersPage() {
     return session?.user?.id === memberId;
   };
 
-  // Hiển thị loading khi đang kiểm tra session
+  // Display loading while checking session
   if (status === "loading" || loading) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
@@ -238,7 +265,7 @@ export default function MembersPage() {
     );
   }
 
-  // Hiển thị thông báo nếu chưa đăng nhập (fallback case)
+  // Display message if not logged in (fallback case)
   if (status === "unauthenticated") {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">

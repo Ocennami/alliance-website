@@ -36,7 +36,7 @@ function LoginContent() {
     setError("");
 
     try {
-      // Kiểm tra nếu là tài khoản đặc biệt để tạo account mới
+      // Check if it's special account to create new account
       if (email === "username1@gmail.com" && password === "11111111") {
         setIsLoading(false);
         setShowCreateAccountModal(true);

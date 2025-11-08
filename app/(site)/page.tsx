@@ -11,9 +11,9 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Kiểm tra nếu user đăng nhập bằng tài khoản đặc biệt
+    // Check if user logged in with special account
     if (session?.user?.email === "username1@gmail.com") {
-      // Redirect về trang login để hiển thị modal
+      // Redirect to login page to show modal
       router.push("/loginpage?showModal=true");
     }
   }, [session, router]);

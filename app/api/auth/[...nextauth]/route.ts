@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Chặn đăng nhập bằng tài khoản đặc biệt - chỉ dùng để tạo account
+        // Block login with special account - only used to create new account
         if (
           credentials.email === "username1@gmail.com" &&
           credentials.password === "11111111"
@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // Đăng nhập với Supabase
+          // Login with Supabase
           const { data, error } = await supabase.auth.signInWithPassword({
             email: credentials.email,
             password: credentials.password,
@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
-          // Lấy thông tin user từ bảng profiles (nếu có)
+          // Get user info from profiles table (if exists)
           const profileResult = await supabase
             .from("profiles")
             .select("*")
@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
 
           let profileData = profileResult.data;
 
-          // Nếu chưa có profile, tạo mới
+          // If profile doesn't exist, create new one
           if (!profileData) {
             console.log("Creating new profile for user:", data.user.id);
             const newProfile = {

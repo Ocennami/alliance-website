@@ -18,6 +18,7 @@ import {
 } from "react-icons/fi";
 import ProfileCodeEditor from "@/components/ProfileCodeEditor";
 import ProfilePreviewModal from "@/components/ProfilePreviewModal";
+import FreeDrawCanvas from "@/components/FreeDrawCanvas";
 
 interface MemberProfile {
   id: string;
@@ -700,6 +701,9 @@ export default function MembersPage() {
             </p>
           </div>
         )}
+
+        {/* Free Drawing Canvas */}
+        <FreeDrawCanvas />
       </div>
 
       {/* Profile Code Editor Modal */}

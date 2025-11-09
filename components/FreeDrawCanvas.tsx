@@ -1,6 +1,13 @@
 "use client";
 
-import { useRef, useState, useEffect, MouseEvent, useCallback, useMemo } from "react";
+import {
+  useRef,
+  useState,
+  useEffect,
+  MouseEvent,
+  useCallback,
+  useMemo,
+} from "react";
 import { motion } from "framer-motion";
 import {
   FiEdit3,
@@ -81,7 +88,7 @@ export default function FreeDrawCanvas() {
     }
     return `anonymous-${Math.random().toString(36).substring(7)}`;
   });
-  
+
   // Use authenticated user ID if logged in, otherwise use anonymous ID
   const userId = useMemo(() => {
     if (session?.user?.email) {

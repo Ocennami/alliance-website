@@ -114,6 +114,19 @@ export default function FreeDrawCanvas() {
   const [currentElement, setCurrentElement] = useState<DrawElement | null>(
     null
   );
+  const [selectedElement, setSelectedElement] = useState<DrawElement | null>(
+    null
+  );
+  const [isEditingText, setIsEditingText] = useState(false);
+  const [textInputValue, setTextInputValue] = useState("");
+  const [textInputPosition, setTextInputPosition] = useState<Point | null>(
+    null
+  );
+  const [textBoxSize, setTextBoxSize] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+  const [textBoxStartPos, setTextBoxStartPos] = useState<Point | null>(null);
   const [history, setHistory] = useState<DrawElement[][]>([[]]);
   const [historyStep, setHistoryStep] = useState(0);
   const [scale, setScale] = useState(1);
@@ -132,6 +145,82 @@ export default function FreeDrawCanvas() {
   const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(
     null
   );
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const textMeasureCtxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const allowBlurRef = useRef(false);
+
+  const getTextMetrics = useCallback((text: string, fontSize: number) => {
+    // Create context on-demand instead of using ref
+    let ctx = textMeasureCtxRef.current;
+    if (!ctx && typeof document !== "undefined") {
+      const canvas = document.createElement("canvas");
+      ctx = canvas.getContext("2d");
+      textMeasureCtxRef.current = ctx;
+    }
+
+    const lines = text ? text.split("\n") : [""];
+    const safeLines = lines.length ? lines : [""];
+    const lineHeight = fontSize * 1.2;
+
+    if (!ctx) {
+      const fallbackWidth =
+        Math.max(...safeLines.map((line) => line.length)) * fontSize * 0.6;
+      return {
+        width: Math.max(fallbackWidth, fontSize),
+        height: safeLines.length * lineHeight,
+        lineHeight,
+      };
+    }
+
+    ctx.save();
+    ctx.font = `${fontSize}px Arial`;
+    const widths = safeLines.map(
+      (line) => ctx!.measureText(line === "" ? " " : line).width
+    );
+    ctx.restore();
+
+    return {
+      width: Math.max(...widths, fontSize / 2),
+      height: safeLines.length * lineHeight,
+      lineHeight,
+    };
+  }, []);
+
+  const inlineEditorFontSize = useMemo(
+    () => Math.max(16, brushSize * 8),
+    [brushSize]
+  );
+
+  useEffect(() => {
+    if (isEditingText && textAreaRef.current) {
+      const area = textAreaRef.current;
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
+        area.focus();
+        const length = textInputValue.length;
+        try {
+          area.setSelectionRange(length, length);
+        } catch {
+          // Some browsers fail silently if selection range isn't supported
+        }
+        // Allow blur after a short delay (after focus is fully established)
+        setTimeout(() => {
+          allowBlurRef.current = true;
+        }, 100);
+      });
+    } else {
+      // Reset when not editing
+      allowBlurRef.current = false;
+    }
+  }, [isEditingText, textInputValue]);
+
+  useEffect(() => {
+    if (!textAreaRef.current) return;
+    const area = textAreaRef.current;
+    area.style.height = "auto";
+    const minHeight = Math.max(inlineEditorFontSize * 1.4, 48);
+    area.style.height = `${Math.max(area.scrollHeight, minHeight)}px`;
+  }, [inlineEditorFontSize, isEditingText, textInputValue]);
 
   const colors = [
     { name: "Purple", value: "#8B5CF6" },
@@ -155,6 +244,14 @@ export default function FreeDrawCanvas() {
     { id: "text" as Tool, icon: FiType, label: "Text", key: "8" },
     { id: "pan" as Tool, icon: FiMove, label: "Pan", key: "Space" },
   ];
+
+  // Helper function to change tool and clear selection
+  const changeTool = useCallback((newTool: Tool) => {
+    setTool(newTool);
+    if (newTool !== "select") {
+      setSelectedElement(null);
+    }
+  }, []);
 
   // Draw element function
   const drawElement = useCallback(
@@ -257,12 +354,17 @@ export default function FreeDrawCanvas() {
           break;
         case "text":
           if (element.startPoint && element.text) {
-            ctx.font = `${element.lineWidth * 8}px Arial`;
-            ctx.fillText(
-              element.text,
-              element.startPoint.x,
-              element.startPoint.y
-            );
+            const fontSize = element.lineWidth * 8;
+            const lines = element.text.split("\n");
+            const lineHeight = fontSize * 1.2;
+            const start = element.startPoint;
+            ctx.save();
+            ctx.font = `${fontSize}px Arial`;
+            ctx.textBaseline = "alphabetic";
+            lines.forEach((line, index) => {
+              ctx.fillText(line, start.x, start.y + index * lineHeight);
+            });
+            ctx.restore();
           }
           break;
       }
@@ -320,7 +422,192 @@ export default function FreeDrawCanvas() {
     // Draw elements
     elements.forEach((element) => drawElement(ctx, element));
     if (currentElement) drawElement(ctx, currentElement);
+
+    // Draw selection box if an element is selected
+    if (selectedElement && selectedElement.startPoint) {
+      ctx.strokeStyle = "#8B5CF6";
+      ctx.lineWidth = 2.5 / scale;
+      ctx.setLineDash([8 / scale, 4 / scale]);
+
+      if (selectedElement.type === "pen" && selectedElement.points) {
+        // Draw selection following the pen stroke path itself
+        ctx.lineWidth = 3 / scale;
+        ctx.beginPath();
+        ctx.moveTo(selectedElement.points[0].x, selectedElement.points[0].y);
+        for (let i = 1; i < selectedElement.points.length; i++) {
+          ctx.lineTo(selectedElement.points[i].x, selectedElement.points[i].y);
+        }
+        ctx.stroke();
+
+        // Draw endpoint handles
+        const handleSize = 8 / scale;
+        ctx.fillStyle = "#8B5CF6";
+        ctx.setLineDash([]);
+        if (selectedElement.points.length > 0) {
+          const firstPoint = selectedElement.points[0];
+          const lastPoint =
+            selectedElement.points[selectedElement.points.length - 1];
+          ctx.beginPath();
+          ctx.arc(firstPoint.x, firstPoint.y, handleSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(lastPoint.x, lastPoint.y, handleSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (selectedElement.endPoint) {
+        const start = selectedElement.startPoint;
+        const end = selectedElement.endPoint;
+
+        if (
+          selectedElement.type === "line" ||
+          selectedElement.type === "arrow"
+        ) {
+          // Draw selection directly on the line
+          ctx.lineWidth = 3 / scale;
+          ctx.beginPath();
+          ctx.moveTo(start.x, start.y);
+          ctx.lineTo(end.x, end.y);
+          ctx.stroke();
+
+          // For arrow, also draw the arrowhead selection
+          if (selectedElement.type === "arrow") {
+            const headLength = 15;
+            const angle = Math.atan2(end.y - start.y, end.x - start.x);
+            ctx.beginPath();
+            ctx.moveTo(end.x, end.y);
+            ctx.lineTo(
+              end.x - headLength * Math.cos(angle - Math.PI / 6),
+              end.y - headLength * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.moveTo(end.x, end.y);
+            ctx.lineTo(
+              end.x - headLength * Math.cos(angle + Math.PI / 6),
+              end.y - headLength * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.stroke();
+          }
+
+          // Draw endpoint handles
+          const handleSize = 8 / scale;
+          ctx.fillStyle = "#8B5CF6";
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.arc(start.x, start.y, handleSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(end.x, end.y, handleSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (selectedElement.type === "circle") {
+          // Draw selection following circle shape
+          const radius = Math.sqrt(
+            Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2)
+          );
+          const outerRadius = radius + 3;
+          ctx.beginPath();
+          ctx.arc(start.x, start.y, outerRadius, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Draw center and edge handles
+          const handleSize = 8 / scale;
+          ctx.fillStyle = "#8B5CF6";
+          ctx.setLineDash([]);
+          // Center handle
+          ctx.beginPath();
+          ctx.arc(start.x, start.y, handleSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+          // Edge handle
+          ctx.beginPath();
+          ctx.arc(end.x, end.y, handleSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (selectedElement.type === "rectangle") {
+          // Draw selection box tightly around rectangle
+          const minX = Math.min(start.x, end.x);
+          const maxX = Math.max(start.x, end.x);
+          const minY = Math.min(start.y, end.y);
+          const maxY = Math.max(start.y, end.y);
+          const padding = 3;
+          ctx.strokeRect(
+            minX - padding,
+            minY - padding,
+            maxX - minX + padding * 2,
+            maxY - minY + padding * 2
+          );
+
+          // Draw corner handles
+          const handleSize = 8 / scale;
+          ctx.fillStyle = "#8B5CF6";
+          ctx.setLineDash([]);
+          [
+            [minX, minY],
+            [maxX, minY],
+            [maxX, maxY],
+            [minX, maxY],
+          ].forEach(([x, y]) => {
+            ctx.fillRect(
+              x - handleSize / 2,
+              y - handleSize / 2,
+              handleSize,
+              handleSize
+            );
+          });
+        } else if (selectedElement.type === "text") {
+          // Draw selection box around text
+          if (selectedElement.text) {
+            const fontSize = selectedElement.lineWidth * 8;
+            const metrics = getTextMetrics(selectedElement.text, fontSize);
+            const padding = 5;
+            const topY = start.y - fontSize;
+
+            ctx.strokeRect(
+              start.x - padding,
+              topY - padding,
+              metrics.width + padding * 2,
+              metrics.height + padding * 2
+            );
+
+            // Draw corner handles
+            const handleSize = 8 / scale;
+            ctx.fillStyle = "#8B5CF6";
+            ctx.setLineDash([]);
+            [
+              [start.x - padding, topY - padding],
+              [start.x + metrics.width + padding, topY - padding],
+              [
+                start.x + metrics.width + padding,
+                topY + metrics.height + padding,
+              ],
+              [start.x - padding, topY + metrics.height + padding],
+            ].forEach(([x, y]) => {
+              ctx.fillRect(
+                x - handleSize / 2,
+                y - handleSize / 2,
+                handleSize,
+                handleSize
+              );
+            });
+          }
+        }
+      }
+
+      ctx.setLineDash([]);
+    }
+
     ctx.restore();
+
+    // Draw text box preview while dragging (outside transformations)
+    if (tool === "text" && isDrawing && textInputPosition && textBoxSize) {
+      ctx.save();
+      ctx.strokeStyle = "#8B5CF6";
+      ctx.setLineDash([5, 5]);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(
+        textInputPosition.x,
+        textInputPosition.y,
+        textBoxSize.width,
+        textBoxSize.height
+      );
+      ctx.restore();
+    }
 
     // Draw cursor preview (outside transformations)
     if (cursorPos && (tool === "pen" || tool === "eraser")) {
@@ -340,6 +627,7 @@ export default function FreeDrawCanvas() {
   }, [
     elements,
     currentElement,
+    selectedElement,
     scale,
     offset,
     drawElement,
@@ -348,6 +636,10 @@ export default function FreeDrawCanvas() {
     tool,
     brushSize,
     color,
+    getTextMetrics,
+    isDrawing,
+    textInputPosition,
+    textBoxSize,
   ]);
 
   // Keyboard shortcuts
@@ -357,14 +649,14 @@ export default function FreeDrawCanvas() {
       if (e.shiftKey) setIsShiftPressed(true);
 
       // Tool shortcuts (numbers)
-      if (e.key === "1") setTool("select");
-      if (e.key === "2") setTool("pen");
-      if (e.key === "3") setTool("eraser");
-      if (e.key === "4") setTool("line");
-      if (e.key === "5") setTool("rectangle");
-      if (e.key === "6") setTool("circle");
-      if (e.key === "7") setTool("arrow");
-      if (e.key === "8") setTool("text");
+      if (e.key === "1") changeTool("select");
+      if (e.key === "2") changeTool("pen");
+      if (e.key === "3") changeTool("eraser");
+      if (e.key === "4") changeTool("line");
+      if (e.key === "5") changeTool("rectangle");
+      if (e.key === "6") changeTool("circle");
+      if (e.key === "7") changeTool("arrow");
+      if (e.key === "8") changeTool("text");
 
       // Brush size shortcuts
       if (e.key === "[" && brushSize > 1) setBrushSize(brushSize - 1);
@@ -375,7 +667,7 @@ export default function FreeDrawCanvas() {
 
       // Pan with Space
       if (e.code === "Space" && !isPanning) {
-        setTool("pan");
+        changeTool("pan");
         e.preventDefault();
       }
 
@@ -398,15 +690,37 @@ export default function FreeDrawCanvas() {
         }
       }
 
-      // Delete selected (future feature)
+      // Delete selected element
       if (e.key === "Delete" || e.key === "Backspace") {
-        // Will implement when select tool is ready
+        if (selectedElement) {
+          // Only allow deleting own drawings
+          if (!selectedElement.userId || selectedElement.userId === userId) {
+            const newElements = elements.filter(
+              (el) => el.id !== selectedElement.id
+            );
+            setElements(newElements);
+            const newHistory = history.slice(0, historyStep + 1);
+            newHistory.push(newElements);
+            setHistory(newHistory);
+            setHistoryStep(newHistory.length - 1);
+
+            // Delete from Supabase
+            supabase
+              .from("drawing_elements")
+              .delete()
+              .eq("element_id", selectedElement.id)
+              .then();
+
+            setSelectedElement(null);
+          }
+          e.preventDefault();
+        }
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.code === "Space") {
-        setTool("pen"); // Return to pen after releasing space
+        changeTool("pen"); // Return to pen after releasing space
       }
       if (e.key === "Shift") {
         setIsShiftPressed(false);
@@ -419,7 +733,17 @@ export default function FreeDrawCanvas() {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [brushSize, showGrid, isPanning, historyStep, history]);
+  }, [
+    brushSize,
+    showGrid,
+    isPanning,
+    historyStep,
+    history,
+    selectedElement,
+    elements,
+    userId,
+    changeTool,
+  ]);
 
   // Initialize canvas
   useEffect(() => {
@@ -583,6 +907,9 @@ export default function FreeDrawCanvas() {
   };
 
   const handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
+    // Don't interfere if editing text
+    if (isEditingText) return;
+
     if (tool === "pan") {
       setIsPanning(true);
       const rect = canvasRef.current?.getBoundingClientRect();
@@ -686,6 +1013,20 @@ export default function FreeDrawCanvas() {
               nearLeftEdge || nearRightEdge || nearTopEdge || nearBottomEdge
             );
           }
+        } else if (
+          element.type === "text" &&
+          element.startPoint &&
+          element.text
+        ) {
+          const fontSize = element.lineWidth * 8;
+          const metrics = getTextMetrics(element.text, fontSize);
+          const topY = element.startPoint.y - fontSize;
+          return (
+            point.x >= element.startPoint.x - threshold &&
+            point.x <= element.startPoint.x + metrics.width + threshold &&
+            point.y >= topY - threshold &&
+            point.y <= topY + metrics.height + threshold
+          );
         }
         return false;
       });
@@ -710,31 +1051,106 @@ export default function FreeDrawCanvas() {
       return;
     }
 
-    setIsDrawing(true);
+    // Select tool: Find and select element at click position
+    if (tool === "select") {
+      const threshold = 10;
 
+      const clickedElement = elements.find((element) => {
+        if (element.type === "pen" && element.points) {
+          return element.points.some(
+            (p) =>
+              Math.abs(p.x - point.x) < threshold &&
+              Math.abs(p.y - point.y) < threshold
+          );
+        } else if (element.startPoint && element.endPoint) {
+          const start = element.startPoint;
+          const end = element.endPoint;
+
+          if (element.type === "line" || element.type === "arrow") {
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const lengthSquared = dx * dx + dy * dy;
+
+            if (lengthSquared === 0) {
+              const dist = Math.sqrt(
+                Math.pow(point.x - start.x, 2) + Math.pow(point.y - start.y, 2)
+              );
+              return dist < threshold;
+            }
+
+            const t = Math.max(
+              0,
+              Math.min(
+                1,
+                ((point.x - start.x) * dx + (point.y - start.y) * dy) /
+                  lengthSquared
+              )
+            );
+            const projX = start.x + t * dx;
+            const projY = start.y + t * dy;
+            const dist = Math.sqrt(
+              Math.pow(point.x - projX, 2) + Math.pow(point.y - projY, 2)
+            );
+            return dist < threshold;
+          } else if (element.type === "circle") {
+            const radius = Math.sqrt(
+              Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2)
+            );
+            const distFromCenter = Math.sqrt(
+              Math.pow(point.x - start.x, 2) + Math.pow(point.y - start.y, 2)
+            );
+            return Math.abs(distFromCenter - radius) < threshold;
+          } else if (element.type === "rectangle") {
+            const minX = Math.min(start.x, end.x);
+            const maxX = Math.max(start.x, end.x);
+            const minY = Math.min(start.y, end.y);
+            const maxY = Math.max(start.y, end.y);
+
+            return (
+              point.x >= minX - threshold &&
+              point.x <= maxX + threshold &&
+              point.y >= minY - threshold &&
+              point.y <= maxY + threshold
+            );
+          }
+        } else if (
+          element.type === "text" &&
+          element.startPoint &&
+          element.text
+        ) {
+          const fontSize = element.lineWidth * 8;
+          const metrics = getTextMetrics(element.text, fontSize);
+          const topY = element.startPoint.y - fontSize;
+
+          return (
+            point.x >= element.startPoint.x - threshold &&
+            point.x <= element.startPoint.x + metrics.width + threshold &&
+            point.y >= topY - threshold &&
+            point.y <= topY + metrics.height + threshold
+          );
+        }
+        return false;
+      });
+
+      setSelectedElement(clickedElement || null);
+      return;
+    }
+
+    // Text tool: Start drawing or prepare for text input
     if (tool === "text") {
-      const text = prompt("Enter text:");
-      if (text) {
-        const newElement: DrawElement = {
-          id: `element-${++elementIdRef.current}`,
-          type: "text",
-          startPoint: point,
-          text,
-          color,
-          lineWidth: brushSize,
-          userId,
-          strokeStyle,
-          opacity,
-        };
-        const newElements = [...elements, newElement];
-        setElements(newElements);
-        const newHistory = history.slice(0, historyStep + 1);
-        newHistory.push(newElements);
-        setHistory(newHistory);
-        setHistoryStep(newHistory.length - 1);
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        const screenX = e.clientX - rect.left;
+        const screenY = e.clientY - rect.top;
+        // Save start position to detect drag vs click
+        setTextBoxStartPos({ x: screenX, y: screenY });
+        setTextInputPosition({ x: screenX, y: screenY });
+        setIsDrawing(true);
       }
       return;
     }
+
+    setIsDrawing(true);
 
     const newElement: DrawElement = {
       id: `element-${++elementIdRef.current}`,
@@ -772,6 +1188,24 @@ export default function FreeDrawCanvas() {
         });
         setLastPanPoint(currentPoint);
       }
+      return;
+    }
+
+    // Handle text box dragging
+    if (tool === "text" && isDrawing && textBoxStartPos && rect) {
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+      const width = Math.abs(currentX - textBoxStartPos.x);
+      const height = Math.abs(currentY - textBoxStartPos.y);
+
+      // Update box size and position
+      const minX = Math.min(textBoxStartPos.x, currentX);
+      const minY = Math.min(textBoxStartPos.y, currentY);
+      setTextInputPosition({ x: minX, y: minY });
+      setTextBoxSize({
+        width: Math.max(width, 10),
+        height: Math.max(height, 10),
+      });
       return;
     }
 
@@ -818,6 +1252,23 @@ export default function FreeDrawCanvas() {
       return;
     }
 
+    // Handle text tool
+    if (tool === "text" && isDrawing) {
+      setIsDrawing(false);
+      const wasDragged =
+        textBoxSize && (textBoxSize.width > 20 || textBoxSize.height > 20);
+
+      if (!wasDragged) {
+        // Simple click - no box, use default minimal size
+        setTextBoxSize(null);
+      }
+      // Open text editor in both cases
+      setIsEditingText(true);
+      setTextInputValue("");
+      setTextBoxStartPos(null);
+      return;
+    }
+
     if (isDrawing && currentElement) {
       const newElements = [...elements, currentElement];
       setElements(newElements);
@@ -845,6 +1296,99 @@ export default function FreeDrawCanvas() {
     }
     setIsDrawing(false);
   };
+
+  // Handle text input submission
+  const resetInlineText = useCallback(() => {
+    setIsEditingText(false);
+    setTextInputValue("");
+    setTextInputPosition(null);
+    setTextBoxSize(null);
+    setTextBoxStartPos(null);
+  }, []);
+
+  const handleTextSubmit = useCallback(
+    (options?: { cancel?: boolean }) => {
+      if (!isEditingText) {
+        return;
+      }
+
+      if (options?.cancel) {
+        resetInlineText();
+        return;
+      }
+
+      if (!textInputPosition) {
+        resetInlineText();
+        return;
+      }
+
+      const normalizedText = textInputValue.replace(/\s+$/g, "");
+      if (!normalizedText) {
+        resetInlineText();
+        return;
+      }
+
+      // Convert screen coordinates back to canvas coordinates
+      const canvasX = (textInputPosition.x - offset.x) / scale;
+      const canvasY = (textInputPosition.y - offset.y) / scale;
+
+      // Adjust Y position to account for text baseline
+      // The textarea top is at click position, but text baseline should be lower
+      const fontSize = brushSize * 8;
+      const adjustedCanvasY = canvasY + fontSize;
+
+      const newElement: DrawElement = {
+        id: `element-${++elementIdRef.current}`,
+        type: "text",
+        startPoint: { x: canvasX, y: adjustedCanvasY },
+        text: normalizedText,
+        color,
+        lineWidth: brushSize,
+        userId,
+        strokeStyle,
+        opacity,
+      };
+      const newElements = [...elements, newElement];
+      setElements(newElements);
+      const newHistory = history.slice(0, historyStep + 1);
+      newHistory.push(newElements);
+      setHistory(newHistory);
+      setHistoryStep(newHistory.length - 1);
+
+      // Save to Supabase for real-time sync
+      supabase.from("drawing_elements").insert({
+        element_id: newElement.id,
+        type: newElement.type,
+        points: null,
+        start_point: newElement.startPoint,
+        end_point: null,
+        text: newElement.text,
+        color: newElement.color,
+        line_width: newElement.lineWidth,
+        user_id: newElement.userId,
+        stroke_style: newElement.strokeStyle || "solid",
+        opacity: newElement.opacity || 100,
+      });
+
+      resetInlineText();
+    },
+    [
+      brushSize,
+      color,
+      elements,
+      history,
+      historyStep,
+      isEditingText,
+      offset,
+      opacity,
+      resetInlineText,
+      scale,
+      strokeStyle,
+      textInputPosition,
+      textInputValue,
+      userId,
+    ]
+  );
 
   // Touch event handlers for mobile support
   const getTouchPos = (e: React.TouchEvent<HTMLCanvasElement>): Point => {
@@ -1157,10 +1701,14 @@ export default function FreeDrawCanvas() {
 
               {/* Floating Toolbar - Top Center like Excalidraw - Responsive */}
               <motion.div
-                className="absolute top-2 md:top-4 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-xl md:rounded-2xl shadow-2xl border border-gray-200/50 p-1.5 md:p-2 max-w-[95vw] overflow-x-auto"
+                className="absolute top-2 md:top-4 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-xl md:rounded-2xl shadow-2xl border border-gray-200/50 p-1.5 md:p-2 max-w-[95vw] overflow-x-auto md:overflow-x-visible scrollbar-hide"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
+                style={{
+                  scrollbarWidth: "none", // Firefox
+                  msOverflowStyle: "none", // IE and Edge
+                }}
               >
                 <div className="flex items-center gap-1 md:gap-2">
                   {/* Tools */}
@@ -1168,7 +1716,7 @@ export default function FreeDrawCanvas() {
                     {tools.map((t) => (
                       <motion.button
                         key={t.id}
-                        onClick={() => setTool(t.id)}
+                        onClick={() => changeTool(t.id)}
                         className={`p-2 md:p-2.5 rounded-lg transition-all relative group ${
                           tool === t.id
                             ? "bg-purple-100 text-purple-600 shadow-md"
@@ -1447,6 +1995,63 @@ export default function FreeDrawCanvas() {
                   </div>
                 </div>
               </motion.div>
+
+              {/* Inline Text Input */}
+              {isEditingText && textInputPosition && (
+                <div
+                  className={`absolute pointer-events-auto ${
+                    textBoxSize
+                      ? "border-2 border-purple-400 border-dashed"
+                      : ""
+                  }`}
+                  style={{
+                    left: `${textInputPosition.x}px`,
+                    top: `${textInputPosition.y}px`,
+                    width: textBoxSize ? `${textBoxSize.width}px` : "auto",
+                    height: textBoxSize ? `${textBoxSize.height}px` : "auto",
+                    minWidth: textBoxSize ? undefined : "200px",
+                    minHeight: textBoxSize ? undefined : "auto",
+                    zIndex: 9999,
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  <textarea
+                    ref={textAreaRef}
+                    value={textInputValue}
+                    onChange={(e) => setTextInputValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      e.stopPropagation();
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleTextSubmit();
+                      } else if (e.key === "Escape") {
+                        e.preventDefault();
+                        handleTextSubmit({ cancel: true });
+                      }
+                    }}
+                    onBlur={() => {
+                      // Only submit if blur is allowed (after initial focus)
+                      if (!allowBlurRef.current) {
+                        return;
+                      }
+                      // Small delay to allow Enter key to process first
+                      setTimeout(() => handleTextSubmit(), 150);
+                    }}
+                    autoFocus
+                    className={`outline-none resize-none whitespace-pre-wrap bg-transparent border-none m-0 ${
+                      textBoxSize ? "w-full h-full p-2" : "p-0"
+                    }`}
+                    style={{
+                      fontSize: `${inlineEditorFontSize}px`,
+                      lineHeight: `${inlineEditorFontSize * 1.2}px`,
+                      color: color,
+                      caretColor: color,
+                    }}
+                    placeholder=""
+                  />
+                </div>
+              )}
 
               {/* Watermark */}
               <div className="absolute bottom-4 right-4 text-gray-400 text-xs font-semibold opacity-50">

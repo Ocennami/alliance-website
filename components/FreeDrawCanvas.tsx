@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, MouseEvent, useCallback } from "react";
+import { useRef, useState, useEffect, MouseEvent, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   FiEdit3,
@@ -17,6 +17,7 @@ import {
   FiUsers,
 } from "react-icons/fi";
 import { supabase } from "@/lib/supabase";
+import { useSession } from "next-auth/react";
 
 // Custom Eraser Icon
 const EraserIcon = ({ className }: { className?: string }) => (
@@ -68,9 +69,36 @@ interface DrawElement {
 export default function FreeDrawCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const elementIdRef = useRef(0);
-  const [userId] = useState(
-    () => `user-${Math.random().toString(36).substring(7)}`
-  );
+  const { data: session } = useSession();
+
+  // Initialize anonymous ID once on mount
+  const [anonymousId] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("canvas-user-id");
+      if (stored && !stored.includes("@")) {
+        return stored;
+      }
+    }
+    return `anonymous-${Math.random().toString(36).substring(7)}`;
+  });
+  
+  // Use authenticated user ID if logged in, otherwise use anonymous ID
+  const userId = useMemo(() => {
+    if (session?.user?.email) {
+      // User logged in - use their email as userId
+      if (typeof window !== "undefined") {
+        localStorage.setItem("canvas-user-id", session.user.email);
+      }
+      return session.user.email;
+    } else {
+      // User not logged in - use anonymous ID
+      if (typeof window !== "undefined") {
+        localStorage.setItem("canvas-user-id", anonymousId);
+      }
+      return anonymousId;
+    }
+  }, [session?.user?.email, anonymousId]);
+
   const [isDrawing, setIsDrawing] = useState(false);
   const [tool, setTool] = useState<Tool>("pen");
   const [color, setColor] = useState("#8B5CF6");
@@ -94,6 +122,9 @@ export default function FreeDrawCanvas() {
   const [opacity, setOpacity] = useState(100);
   const [cursorPos, setCursorPos] = useState<Point | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
+  const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(
+    null
+  );
 
   const colors = [
     { name: "Purple", value: "#8B5CF6" },
@@ -490,6 +521,8 @@ export default function FreeDrawCanvas() {
                     color: item.color,
                     lineWidth: item.line_width,
                     userId: item.user_id,
+                    strokeStyle: item.stroke_style || "solid",
+                    opacity: item.opacity || 100,
                   }));
                   setElements(loadedElements);
                 }
@@ -556,27 +589,96 @@ export default function FreeDrawCanvas() {
 
     // Eraser: Remove element at click position (only user's own drawings)
     if (tool === "eraser") {
+      const threshold = 10; // Click tolerance in pixels
+
       const elementToRemove = elements.find((element) => {
-        // Only allow erasing own drawings
-        if (element.userId !== userId) return false;
+        // Only allow erasing own drawings or legacy drawings without userId
+        // Skip if element has a userId but it doesn't match current user
+        if (element.userId && element.userId !== userId) return false;
 
         if (element.type === "pen" && element.points) {
           // Check if point is near any point in the pen stroke
           return element.points.some(
-            (p) => Math.abs(p.x - point.x) < 10 && Math.abs(p.y - point.y) < 10
+            (p) =>
+              Math.abs(p.x - point.x) < threshold &&
+              Math.abs(p.y - point.y) < threshold
           );
         } else if (element.startPoint && element.endPoint) {
-          // Check if point is within bounding box of shapes
-          const minX = Math.min(element.startPoint.x, element.endPoint.x);
-          const maxX = Math.max(element.startPoint.x, element.endPoint.x);
-          const minY = Math.min(element.startPoint.y, element.endPoint.y);
-          const maxY = Math.max(element.startPoint.y, element.endPoint.y);
-          return (
-            point.x >= minX - 10 &&
-            point.x <= maxX + 10 &&
-            point.y >= minY - 10 &&
-            point.y <= maxY + 10
-          );
+          const start = element.startPoint;
+          const end = element.endPoint;
+
+          if (element.type === "line" || element.type === "arrow") {
+            // Check distance from point to line segment
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const lengthSquared = dx * dx + dy * dy;
+
+            if (lengthSquared === 0) {
+              // Start and end are the same point
+              const dist = Math.sqrt(
+                Math.pow(point.x - start.x, 2) + Math.pow(point.y - start.y, 2)
+              );
+              return dist < threshold;
+            }
+
+            const t = Math.max(
+              0,
+              Math.min(
+                1,
+                ((point.x - start.x) * dx + (point.y - start.y) * dy) /
+                  lengthSquared
+              )
+            );
+            const projX = start.x + t * dx;
+            const projY = start.y + t * dy;
+            const dist = Math.sqrt(
+              Math.pow(point.x - projX, 2) + Math.pow(point.y - projY, 2)
+            );
+            return dist < threshold;
+          } else if (element.type === "circle") {
+            // Check if point is near the circle's edge
+            const radius = Math.sqrt(
+              Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2)
+            );
+            const distFromCenter = Math.sqrt(
+              Math.pow(point.x - start.x, 2) + Math.pow(point.y - start.y, 2)
+            );
+            return Math.abs(distFromCenter - radius) < threshold;
+          } else if (element.type === "rectangle") {
+            // Check if point is near any of the rectangle's edges
+            const minX = Math.min(start.x, end.x);
+            const maxX = Math.max(start.x, end.x);
+            const minY = Math.min(start.y, end.y);
+            const maxY = Math.max(start.y, end.y);
+
+            // Check distance to each edge
+            const distToLeft = Math.abs(point.x - minX);
+            const distToRight = Math.abs(point.x - maxX);
+            const distToTop = Math.abs(point.y - minY);
+            const distToBottom = Math.abs(point.y - maxY);
+
+            // Point is near an edge if it's close to one side and within the bounds of the other dimension
+            const nearLeftEdge =
+              distToLeft < threshold &&
+              point.y >= minY - threshold &&
+              point.y <= maxY + threshold;
+            const nearRightEdge =
+              distToRight < threshold &&
+              point.y >= minY - threshold &&
+              point.y <= maxY + threshold;
+            const nearTopEdge =
+              distToTop < threshold &&
+              point.x >= minX - threshold &&
+              point.x <= maxX + threshold;
+            const nearBottomEdge =
+              distToBottom < threshold &&
+              point.x >= minX - threshold &&
+              point.x <= maxX + threshold;
+
+            return (
+              nearLeftEdge || nearRightEdge || nearTopEdge || nearBottomEdge
+            );
+          }
         }
         return false;
       });
@@ -737,6 +839,223 @@ export default function FreeDrawCanvas() {
     setIsDrawing(false);
   };
 
+  // Touch event handlers for mobile support
+  const getTouchPos = (e: React.TouchEvent<HTMLCanvasElement>): Point => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return { x: 0, y: 0 };
+    const touch = e.touches[0] || e.changedTouches[0];
+    return {
+      x: (touch.clientX - rect.left - offset.x) / scale,
+      y: (touch.clientY - rect.top - offset.y) / scale,
+    };
+  };
+
+  // Get pressure from touch (Apple Pencil support)
+  const getTouchPressure = (e: React.TouchEvent<HTMLCanvasElement>): number => {
+    const touch = e.touches[0] || e.changedTouches[0];
+    // Apple Pencil and some styluses support pressure (force property)
+    // @ts-expect-error - force is not in TypeScript definitions but exists on touch
+    return touch.force !== undefined ? touch.force : 1;
+  };
+
+  const getTouchDistance = (e: React.TouchEvent<HTMLCanvasElement>): number => {
+    if (e.touches.length < 2) return 0;
+    const touch1 = e.touches[0];
+    const touch2 = e.touches[1];
+    const dx = touch2.clientX - touch1.clientX;
+    const dy = touch2.clientY - touch1.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+
+    // Two-finger pinch to zoom
+    if (e.touches.length === 2) {
+      setLastTouchDistance(getTouchDistance(e));
+      return;
+    }
+
+    // Two-finger pan
+    if (e.touches.length === 2 || tool === "pan") {
+      setIsPanning(true);
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        const touch = e.touches[0];
+        setLastPanPoint({
+          x: touch.clientX - rect.left,
+          y: touch.clientY - rect.top,
+        });
+      }
+      return;
+    }
+
+    // Single touch - same as mouse down
+    const point = getTouchPos(e);
+
+    if (tool === "eraser") {
+      const elementToRemove = elements.find((element) => {
+        if (element.userId !== userId) return false;
+        if (element.type === "pen" && element.points) {
+          return element.points.some(
+            (p) => Math.abs(p.x - point.x) < 10 && Math.abs(p.y - point.y) < 10
+          );
+        } else if (element.startPoint && element.endPoint) {
+          const minX = Math.min(element.startPoint.x, element.endPoint.x);
+          const maxX = Math.max(element.startPoint.x, element.endPoint.x);
+          const minY = Math.min(element.startPoint.y, element.endPoint.y);
+          const maxY = Math.max(element.startPoint.y, element.endPoint.y);
+          return (
+            point.x >= minX - 10 &&
+            point.x <= maxX + 10 &&
+            point.y >= minY - 10 &&
+            point.y <= maxY + 10
+          );
+        }
+        return false;
+      });
+
+      if (elementToRemove) {
+        const newElements = elements.filter(
+          (el) => el.id !== elementToRemove.id
+        );
+        setElements(newElements);
+        const newHistory = history.slice(0, historyStep + 1);
+        newHistory.push(newElements);
+        setHistory(newHistory);
+        setHistoryStep(newHistory.length - 1);
+
+        supabase
+          .from("drawing_elements")
+          .delete()
+          .eq("element_id", elementToRemove.id);
+      }
+      return;
+    }
+
+    setIsDrawing(true);
+
+    if (tool === "text") {
+      const text = prompt("Enter text:");
+      if (text) {
+        const newElement: DrawElement = {
+          id: `element-${++elementIdRef.current}`,
+          type: "text",
+          startPoint: point,
+          text,
+          color,
+          lineWidth: brushSize,
+          userId,
+          strokeStyle,
+          opacity,
+        };
+        const newElements = [...elements, newElement];
+        setElements(newElements);
+        const newHistory = history.slice(0, historyStep + 1);
+        newHistory.push(newElements);
+        setHistory(newHistory);
+        setHistoryStep(newHistory.length - 1);
+      }
+      return;
+    }
+
+    // Get pressure for Apple Pencil support
+    const pressure = getTouchPressure(e);
+    const pressureSensitiveWidth = Math.max(1, brushSize * pressure);
+
+    const newElement: DrawElement = {
+      id: `element-${++elementIdRef.current}`,
+      type: tool,
+      color,
+      lineWidth: pressureSensitiveWidth,
+      startPoint: point,
+      userId,
+      strokeStyle,
+      opacity,
+    };
+    if (tool === "pen") newElement.points = [point];
+    setCurrentElement(newElement);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+
+    // Pinch to zoom
+    if (e.touches.length === 2 && lastTouchDistance) {
+      const newDistance = getTouchDistance(e);
+      const scaleChange = newDistance / lastTouchDistance;
+      setScale(Math.max(0.1, Math.min(5, scale * scaleChange)));
+      setLastTouchDistance(newDistance);
+      return;
+    }
+
+    // Pan
+    if (isPanning && lastPanPoint && e.touches.length >= 1) {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        const touch = e.touches[0];
+        const currentPoint = {
+          x: touch.clientX - rect.left,
+          y: touch.clientY - rect.top,
+        };
+        setOffset({
+          x: offset.x + (currentPoint.x - lastPanPoint.x),
+          y: offset.y + (currentPoint.y - lastPanPoint.y),
+        });
+        setLastPanPoint(currentPoint);
+      }
+      return;
+    }
+
+    if (!isDrawing || !currentElement) return;
+    const point = getTouchPos(e);
+
+    if (tool === "pen") {
+      setCurrentElement({
+        ...currentElement,
+        points: [...(currentElement.points || []), point],
+      });
+    } else {
+      setCurrentElement({ ...currentElement, endPoint: point });
+    }
+  };
+
+  const handleTouchEnd = async () => {
+    setLastTouchDistance(null);
+
+    if (isPanning) {
+      setIsPanning(false);
+      setLastPanPoint(null);
+      return;
+    }
+
+    if (isDrawing && currentElement) {
+      const newElements = [...elements, currentElement];
+      setElements(newElements);
+      const newHistory = history.slice(0, historyStep + 1);
+      newHistory.push(newElements);
+      setHistory(newHistory);
+      setHistoryStep(newHistory.length - 1);
+
+      await supabase.from("drawing_elements").insert({
+        element_id: currentElement.id,
+        type: currentElement.type,
+        points: currentElement.points || null,
+        start_point: currentElement.startPoint || null,
+        end_point: currentElement.endPoint || null,
+        text: currentElement.text || null,
+        color: currentElement.color,
+        line_width: currentElement.lineWidth,
+        user_id: currentElement.userId,
+        stroke_style: currentElement.strokeStyle || "solid",
+        opacity: currentElement.opacity || 100,
+      });
+
+      setCurrentElement(null);
+    }
+    setIsDrawing(false);
+  };
+
   const handleUndo = () => {
     if (historyStep > 0) {
       setHistoryStep(historyStep - 1);
@@ -795,6 +1114,13 @@ export default function FreeDrawCanvas() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.5 }}
+              style={
+                {
+                  // Prevent Safari bounce effect and improve iPad experience
+                  WebkitOverflowScrolling: "touch",
+                  WebkitTouchCallout: "none",
+                } as React.CSSProperties
+              }
             >
               <canvas
                 ref={canvasRef}
@@ -802,7 +1128,11 @@ export default function FreeDrawCanvas() {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
-                className={`w-full h-[600px] touch-none ${
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
+                className={`w-full h-[600px] touch-none select-none ${
                   tool === "pan"
                     ? "cursor-grab active:cursor-grabbing"
                     : tool === "eraser"
@@ -818,21 +1148,21 @@ export default function FreeDrawCanvas() {
                 }}
               />
 
-              {/* Floating Toolbar - Top Center like Excalidraw */}
+              {/* Floating Toolbar - Top Center like Excalidraw - Responsive */}
               <motion.div
-                className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200/50 p-2"
+                className="absolute top-2 md:top-4 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-xl md:rounded-2xl shadow-2xl border border-gray-200/50 p-1.5 md:p-2 max-w-[95vw] overflow-x-auto"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 md:gap-2">
                   {/* Tools */}
-                  <div className="flex gap-1 px-2 border-r border-gray-200">
+                  <div className="flex gap-0.5 md:gap-1 px-1 md:px-2 border-r border-gray-200">
                     {tools.map((t) => (
                       <motion.button
                         key={t.id}
                         onClick={() => setTool(t.id)}
-                        className={`p-2.5 rounded-lg transition-all relative group ${
+                        className={`p-2 md:p-2.5 rounded-lg transition-all relative group ${
                           tool === t.id
                             ? "bg-purple-100 text-purple-600 shadow-md"
                             : "text-gray-600 hover:bg-gray-100"
@@ -842,8 +1172,8 @@ export default function FreeDrawCanvas() {
                         title={`${t.label} (${t.key})`}
                       >
                         <t.icon className="w-4 h-4" />
-                        {/* Tooltip */}
-                        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        {/* Tooltip - Hidden on mobile */}
+                        <div className="hidden md:block absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                           {t.label}{" "}
                           <span className="text-gray-400">({t.key})</span>
                         </div>
@@ -852,40 +1182,40 @@ export default function FreeDrawCanvas() {
                   </div>
 
                   {/* Undo/Redo */}
-                  <div className="flex gap-1 px-2 border-r border-gray-200">
+                  <div className="flex gap-0.5 md:gap-1 px-1 md:px-2 border-r border-gray-200">
                     <motion.button
                       onClick={handleUndo}
                       disabled={historyStep <= 0}
-                      className="p-2.5 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-30 relative group"
+                      className="p-2 md:p-2.5 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-30 relative group"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       title="Undo (Ctrl+Z)"
                     >
-                      <FiRotateCcw className="w-4 h-4" />
-                      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <FiRotateCcw className="w-3.5 md:w-4 h-3.5 md:h-4" />
+                      <div className="hidden md:block absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                         Undo <span className="text-gray-400">(Ctrl+Z)</span>
                       </div>
                     </motion.button>
                     <motion.button
                       onClick={handleRedo}
                       disabled={historyStep >= history.length - 1}
-                      className="p-2.5 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-30 relative group"
+                      className="p-2 md:p-2.5 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-30 relative group"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       title="Redo (Ctrl+Y)"
                     >
-                      <FiRotateCw className="w-4 h-4" />
-                      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <FiRotateCw className="w-3.5 md:w-4 h-3.5 md:h-4" />
+                      <div className="hidden md:block absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                         Redo <span className="text-gray-400">(Ctrl+Y)</span>
                       </div>
                     </motion.button>
                   </div>
 
                   {/* Grid */}
-                  <div className="flex gap-1 px-2 border-r border-gray-200">
+                  <div className="flex gap-0.5 md:gap-1 px-1 md:px-2 border-r border-gray-200">
                     <motion.button
                       onClick={() => setShowGrid(!showGrid)}
-                      className={`p-2.5 rounded-lg transition-all relative group ${
+                      className={`p-2 md:p-2.5 rounded-lg transition-all relative group ${
                         showGrid
                           ? "bg-purple-100 text-purple-600 shadow-md"
                           : "text-gray-600 hover:bg-gray-100"
@@ -894,8 +1224,8 @@ export default function FreeDrawCanvas() {
                       whileTap={{ scale: 0.95 }}
                       title={showGrid ? "Hide Grid (G)" : "Show Grid (G)"}
                     >
-                      <FiGrid className="w-4 h-4" />
-                      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <FiGrid className="w-3.5 md:w-4 h-3.5 md:h-4" />
+                      <div className="hidden md:block absolute -bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                         {showGrid ? "Hide" : "Show"} Grid{" "}
                         <span className="text-gray-400">(G)</span>
                       </div>
@@ -903,13 +1233,13 @@ export default function FreeDrawCanvas() {
                   </div>
 
                   {/* Collaborative Status */}
-                  <div className="flex items-center gap-2 px-3">
+                  <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3">
                     <div
-                      className={`w-2 h-2 rounded-full ${
+                      className={`w-1.5 md:w-2 h-1.5 md:h-2 rounded-full ${
                         isConnected ? "bg-green-500" : "bg-gray-400"
                       }`}
                     />
-                    <FiUsers className="w-4 h-4 text-gray-600" />
+                    <FiUsers className="w-3.5 md:w-4 h-3.5 md:h-4 text-gray-600" />
                     <span className="text-xs font-semibold text-gray-700">
                       {onlineUsers}
                     </span>
@@ -917,10 +1247,10 @@ export default function FreeDrawCanvas() {
                 </div>
               </motion.div>
 
-              {/* Shift Key Indicator */}
+              {/* Shift Key Indicator - Hidden on mobile */}
               {isShiftPressed && (
                 <motion.div
-                  className="absolute top-20 right-4 bg-purple-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2"
+                  className="hidden md:flex absolute top-20 right-4 bg-purple-600 text-white px-4 py-2 rounded-lg shadow-lg items-center gap-2"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
@@ -932,14 +1262,14 @@ export default function FreeDrawCanvas() {
                 </motion.div>
               )}
 
-              {/* Tool Settings Panel - Left Side */}
+              {/* Tool Settings Panel - Left Side - Hidden on mobile */}
               {(tool === "pen" ||
                 tool === "line" ||
                 tool === "arrow" ||
                 tool === "rectangle" ||
                 tool === "circle") && (
                 <motion.div
-                  className="absolute left-4 top-20 bg-gray-900/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-700/50 p-4 w-56"
+                  className="hidden md:block absolute left-4 top-20 bg-gray-900/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-700/50 p-4 w-56"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}

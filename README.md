@@ -1,10 +1,10 @@
 <div align="center">
   <a href="https://github.com/Ocennami/alliance-website">
-    <img src="https://user-images.githubusercontent.com/106043444/288039120-14913a8c-a371-428c-8b9a-132830329898.png" alt="Alliance Organization Logo" width="120" height="120">
+    <img src="./public/logo/OIP.jpg" alt="Alliance Organization Logo" width="120" height="120">
   </a>
-  <h1 align="center">Alliance Organization Website</h1>
+  <h1 align="center">Alliance Organization ":v" Website</h1>
   <p align="center">
-    A modern, feature-rich web application for the Alliance Organization.
+    A modern, feature-rich web application for the Alliance Organization ":v".
     <br />
     <a href="https://github.com/Ocennami/alliance-website/issues">Report Bug</a>
     ·
@@ -28,11 +28,11 @@
 
 ## 🌟 About The Project
 
-Welcome to the official repository for **Alliance Organization's website** - a Minecraft community that has been thriving since 2020! 🎮
+Welcome to the official repository for **Alliance Organization ":v" website** - a Minecraft community that has been thriving since 2020! 🎮
 
 This is a modern, feature-rich web application built with cutting-edge technologies to showcase our 5-year journey, 10+ dedicated members, and memorable events. The website provides a seamless and engaging user experience with secure authentication, dynamic profile management, custom HTML/CSS/JS profiles, and real-time communication.
 
-**Our Story**: From playing on the famous aemine.vn server to creating our own private servers and hosting exclusive events, Alliance Organization has grown into a tight-knit family connected through screens and bonded through Minecraft. 🌍
+**Our Story**: From playing on the famous aemine.vn server to creating our own private servers and hosting exclusive events, Alliance Organization ":v" has grown into a tight-knit family connected through screens and bonded through Minecraft. 🌍
 
 ## ✨ Features
 
@@ -427,7 +427,7 @@ This project follows security best practices:
 
 ## 🙏 Acknowledgments
 
-- **Alliance Organization Members** - For 5 amazing years! 🎉
+- **Alliance Organization ":v" Members** - For 5 amazing years! 🎉
 - **Next.js Team** - For the incredible framework
 - **Vercel** - For hosting and development tools
 - **Supabase** - For the awesome backend platform
@@ -437,7 +437,7 @@ This project follows security best practices:
 
 ## 📞 Contact
 
-**Alliance Organization**
+**Alliance Organization ":v"**
 
 - Website: [Alliance Website](https://alliance-group-website.vercel.app)
 - GitHub: [@Ocennami](https://github.com/Ocennami)
@@ -470,7 +470,7 @@ Distributed under the **MIT License**. See `LICENSE` file for more information.
 
 <div align="center">
 
-**Made with ❤️ by Alliance Organization**
+**Made with ❤️ by Alliance Organization ":v"**
 
 _From 2020 to 2025 and beyond... 🚀_
 

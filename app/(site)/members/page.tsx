@@ -328,7 +328,7 @@ export default function MembersPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            Gặp gỡ các thành viên của Alliance Organization
+            Gặp gỡ các thành viên của Alliance Organization &quot;:v&quot;
           </motion.p>
           <motion.p
             className="text-sm text-gray-500"

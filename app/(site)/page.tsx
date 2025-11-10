@@ -96,7 +96,7 @@ export default function HomePage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              {'Welcome to Group Website Alliance Organization ":v"'}
+              {'Welcome back to Group Website Alliance Organization ":v"'}
             </motion.p>
             <motion.div
               className="mt-8 text-gray-300 text-lg"

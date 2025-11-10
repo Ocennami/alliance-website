@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import MigrateAccountModal from "@/components/MigrateAccountModal";
+import { UI } from "@/lib/constants";
 
 function LoginContent() {
   const [email, setEmail] = useState("");
@@ -36,11 +37,20 @@ function LoginContent() {
     setError("");
 
     try {
-      // Check if it's special account to create new account
-      if (email === "username1@gmail.com" && password === "11111111") {
-        setIsLoading(false);
-        setShowCreateAccountModal(true);
-        return;
+      // Check if it's special account to create new account (server-side)
+      const checkResponse = await fetch("/api/auth/check-special", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (checkResponse.ok) {
+        const { isSpecialAccount } = await checkResponse.json();
+        if (isSpecialAccount) {
+          setIsLoading(false);
+          setShowCreateAccountModal(true);
+          return;
+        }
       }
 
       const result = await signIn("credentials", {
@@ -75,9 +85,16 @@ function LoginContent() {
         <div className="absolute left-1/2 top-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-indigo-600/20 blur-3xl animation-delay-1000"></div>
       </div>
 
-      {/* Floating particles */}
+      {/* Floating particles - optimized for mobile */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+        {[
+          ...Array(
+            typeof window !== "undefined" &&
+              window.innerWidth < UI.MOBILE_BREAKPOINT
+              ? UI.PARTICLES_COUNT_MOBILE
+              : UI.PARTICLES_COUNT_DESKTOP
+          ),
+        ].map((_, i) => (
           <motion.div
             key={i}
             className="absolute h-1 w-1 rounded-full bg-white/20"

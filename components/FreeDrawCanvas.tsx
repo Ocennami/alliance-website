@@ -1652,7 +1652,7 @@ export default function FreeDrawCanvas() {
           viewport={{ once: true }}
           transition={{ delay: 0.4 }}
         >
-          Vẽ tự do với nhiều công cụ như Excalidraw - Thả ga sáng tạo!
+          Vẽ tự do cùng nhau - Thả ga sáng tạo!
         </motion.p>
       </div>
 
@@ -2055,7 +2055,7 @@ export default function FreeDrawCanvas() {
 
               {/* Watermark */}
               <div className="absolute bottom-4 right-4 text-gray-400 text-xs font-semibold opacity-50">
-                Alliance Organization
+                Alliance Organization &quot;:v&quot;
               </div>
             </motion.div>
 

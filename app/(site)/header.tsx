@@ -56,28 +56,31 @@ export default function Header() {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-x-6 xl:gap-x-8">
+            <nav
+              className="hidden lg:flex items-center gap-x-6 xl:gap-x-8"
+              aria-label="Main navigation"
+            >
               <Link
                 href="/about"
-                className="text-sm font-medium text-white transition hover:text-gray-200"
+                className="text-sm font-medium text-white transition hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2 py-1"
               >
                 About Us
               </Link>
               <Link
                 href="/members"
-                className="text-sm font-medium text-white transition hover:text-gray-200"
+                className="text-sm font-medium text-white transition hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2 py-1"
               >
                 Members
               </Link>
               <Link
                 href="/gallery"
-                className="text-sm font-medium text-white transition hover:text-gray-200"
+                className="text-sm font-medium text-white transition hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2 py-1"
               >
                 Gallery
               </Link>
               <Link
                 href="/contact"
-                className="text-sm font-medium text-white transition hover:text-gray-200"
+                className="text-sm font-medium text-white transition hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2 py-1"
               >
                 Contact
               </Link>
@@ -93,7 +96,8 @@ export default function Header() {
                 <Link
                   href="/loginpage"
                   prefetch
-                  className="rounded-full bg-white/20 px-3 sm:px-5 py-1.5 sm:py-2 text-sm text-white transition hover:bg-white/30"
+                  className="rounded-full bg-white/20 px-3 sm:px-5 py-1.5 sm:py-2 text-sm text-white transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+                  aria-label="Sign in to your account"
                 >
                   Sign In
                 </Link>
@@ -103,7 +107,10 @@ export default function Header() {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-x-2 rounded-full p-1 transition"
+                    className="flex items-center gap-x-2 rounded-full p-1 transition focus:outline-none focus:ring-2 focus:ring-white/50"
+                    aria-label="User menu"
+                    aria-expanded={isDropdownOpen}
+                    aria-haspopup="true"
                   >
                     {session.user.image && (
                       <motion.div

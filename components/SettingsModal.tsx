@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import AvatarCropModal from "./AvatarCropModal";
+import { UI, ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/lib/constants";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -58,8 +59,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setMessage({ type: "error", text: "File quá lớn! Tối đa 5MB" });
+      if (file.size > UI.MAX_FILE_SIZE) {
+        setMessage({ type: "error", text: ERROR_MESSAGES.FILE_TOO_LARGE });
         return;
       }
       const reader = new FileReader();
@@ -110,7 +111,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Có lỗi xảy ra!");
+        throw new Error(data.error || ERROR_MESSAGES.UPDATE_FAILED);
       }
 
       // Update session and force refresh
@@ -123,13 +124,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         },
       });
 
-      setMessage({ type: "success", text: "Update successful!" });
+      setMessage({ type: "success", text: SUCCESS_MESSAGES.UPDATE_SUCCESS });
       setAvatarFile(null);
       setAvatarPreview(null);
     } catch (error) {
       console.error(error);
       const errorMessage =
-        error instanceof Error ? error.message : "An error occurred!";
+        error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_ERROR;
       setMessage({ type: "error", text: errorMessage });
     } finally {
       setIsLoading(false);
@@ -143,7 +144,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     setMessage(null);
 
     if (newPassword !== confirmPassword) {
-      setMessage({ type: "error", text: "Passwords do not match!" });
+      setMessage({ type: "error", text: ERROR_MESSAGES.PASSWORD_MISMATCH });
       setIsLoading(false);
       return;
     }
@@ -151,7 +152,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     if (newPassword.length < 8) {
       setMessage({
         type: "error",
-        text: "Password must be at least 8 characters long!",
+        text: "Mật khẩu phải có ít nhất 8 ký tự!",
       });
       setIsLoading(false);
       return;

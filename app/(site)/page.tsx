@@ -51,6 +51,14 @@ export default function HomePage() {
       gradient: "from-orange-600 to-amber-600",
       hoverGradient: "from-orange-700 to-amber-700",
     },
+    {
+      icon: "🏯",
+      title: "Temple",
+      description: "Khám phá Chùa Linh Thiêng - Kinh Thành Huế",
+      href: "/temple",
+      gradient: "from-amber-600 to-yellow-600",
+      hoverGradient: "from-amber-700 to-yellow-700",
+    },
   ];
 
   return (

@@ -84,6 +84,12 @@ export default function Header() {
               >
                 Contact
               </Link>
+              <Link
+                href="/temple"
+                className="text-sm font-medium text-white transition hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2 py-1"
+              >
+                Temple
+              </Link>
             </nav>
 
             {/* Right side - Auth and Mobile Menu */}
@@ -237,6 +243,13 @@ export default function Header() {
                     className="block px-4 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition"
                   >
                     Contact
+                  </Link>
+                  <Link
+                    href="/temple"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition"
+                  >
+                    Temple
                   </Link>
                 </div>
               </motion.nav>

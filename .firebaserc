@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "alliance-group-dc583"
-  }
+    "default": "alliance-groupsite"
+  },
+  "targets": {},
+  "etags": {}
 }

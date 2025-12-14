@@ -25,3 +25,5 @@ env:
   # Media Configuration
   - variable: NEXT_PUBLIC_VIDEO_URL
     secret: NEXT_PUBLIC_VIDEO_URL
+  - variable: SUPABASE_SERVICE_ROLE_KEY
+    secret: SUPABASE_SERVICE_ROLE_KEY

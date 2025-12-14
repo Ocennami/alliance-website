@@ -1,0 +1,27 @@
+# Firebase App Hosting configuration
+# https://firebase.google.com/docs/app-hosting
+
+runConfig:
+  runtime: nodejs20
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 10
+
+env:
+  # Supabase Configuration
+  - variable: NEXT_PUBLIC_SUPABASE_URL
+    secret: NEXT_PUBLIC_SUPABASE_URL
+  - variable: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    secret: NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  # NextAuth Configuration
+  - variable: NEXTAUTH_URL
+    secret: NEXTAUTH_URL
+  - variable: NEXTAUTH_SECRET
+    secret: NEXTAUTH_SECRET
+
+  # Media Configuration
+  - variable: NEXT_PUBLIC_VIDEO_URL
+    secret: NEXT_PUBLIC_VIDEO_URL

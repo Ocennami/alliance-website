@@ -1,5 +1,6 @@
 "use client";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 interface TempleLocation {
@@ -9,10 +10,18 @@ interface TempleLocation {
   color: string;
   borderColor: string;
   position: { top: string; left: string };
-  href: string;
+  href?: string;
+  isActive: boolean;
 }
 
 export default function TemplePage() {
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (name: string) => {
+    setToast(`${name} - Tính năng đang phát triển...`);
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const locations: TempleLocation[] = [
     {
       id: "cau-an",
@@ -25,7 +34,7 @@ export default function TemplePage() {
       color: "bg-orange-500",
       borderColor: "border-orange-300",
       position: { top: "45%", left: "18%" },
-      href: "/about",
+      isActive: false,
     },
     {
       id: "cau-nguyen",
@@ -39,6 +48,7 @@ export default function TemplePage() {
       borderColor: "border-amber-200",
       position: { top: "40%", left: "50%" },
       href: "/cau-nguyen",
+      isActive: true,
     },
     {
       id: "thien-dinh",
@@ -51,7 +61,7 @@ export default function TemplePage() {
       color: "bg-emerald-500",
       borderColor: "border-emerald-300",
       position: { top: "22%", left: "68%" },
-      href: "/members",
+      isActive: false,
     },
     {
       id: "vu-tru",
@@ -64,9 +74,61 @@ export default function TemplePage() {
       color: "bg-cyan-500",
       borderColor: "border-cyan-300",
       position: { top: "55%", left: "72%" },
-      href: "/contact",
+      isActive: false,
     },
   ];
+
+  const LocationButton = ({ location }: { location: TempleLocation }) => {
+    const buttonContent = (
+      <motion.div
+        className={`
+          relative flex flex-col items-center justify-center
+          w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28
+          rounded-full ${location.color}
+          border-4 ${location.borderColor}
+          cursor-pointer shadow-xl
+          text-white
+        `}
+        whileHover={{
+          scale: 1.15,
+          boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+        }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {/* Pulse animation ring */}
+        <motion.div
+          className={`absolute inset-0 rounded-full ${location.color} opacity-30`}
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0, 0.3],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* Icon */}
+        <div className="relative z-10">{location.icon}</div>
+
+        {/* Label */}
+        <span className="relative z-10 text-xs md:text-sm font-semibold mt-1 text-center px-1">
+          {location.name}
+        </span>
+      </motion.div>
+    );
+
+    if (location.isActive && location.href) {
+      return <Link href={location.href}>{buttonContent}</Link>;
+    }
+
+    return (
+      <div onClick={() => showToast(location.name)}>
+        {buttonContent}
+      </div>
+    );
+  };
 
   return (
     <main className="fixed inset-0 overflow-hidden">
@@ -118,48 +180,26 @@ export default function TemplePage() {
               stiffness: 200,
             }}
           >
-            <Link href={location.href}>
-              <motion.div
-                className={`
-                  relative flex flex-col items-center justify-center
-                  w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28
-                  rounded-full ${location.color}
-                  border-4 ${location.borderColor}
-                  cursor-pointer shadow-xl
-                  text-white
-                `}
-                whileHover={{
-                  scale: 1.15,
-                  boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {/* Pulse animation ring */}
-                <motion.div
-                  className={`absolute inset-0 rounded-full ${location.color} opacity-30`}
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [0.3, 0, 0.3],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-
-                {/* Icon */}
-                <div className="relative z-10">{location.icon}</div>
-
-                {/* Label */}
-                <span className="relative z-10 text-xs md:text-sm font-semibold mt-1 text-center px-1">
-                  {location.name}
-                </span>
-              </motion.div>
-            </Link>
+            <LocationButton location={location} />
           </motion.div>
         ))}
       </div>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50"
+          >
+            <div className="bg-orange-500 text-white px-6 py-3 rounded-lg shadow-xl font-medium">
+              {toast}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Decorative floating elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

@@ -38,7 +38,7 @@ export default function TemplePage() {
       color: "bg-amber-500",
       borderColor: "border-amber-200",
       position: { top: "40%", left: "50%" },
-      href: "/gallery",
+      href: "/cau-nguyen",
     },
     {
       id: "thien-dinh",

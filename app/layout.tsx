@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import Providers from "./providers";
+import Snowfall from "@/components/Snowfall";
 
 export const metadata: Metadata = {
   title: {
@@ -83,6 +84,7 @@ export default async function RootLayout({
         className={`${GeistSans.variable} ${GeistMono.variable} bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-900 antialiased`}
         suppressHydrationWarning={true}
       >
+        <Snowfall count={60} minSize={2} maxSize={6} minSpeed={1.5} maxSpeed={2} />
         <Providers>
           <main>{children}</main>
         </Providers>
